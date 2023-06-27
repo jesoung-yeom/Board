@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Dashboard</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+<body>
+<!--------------------left panel------------------->
+<div style="position:fixed; left:0%; top:4%; height:96%;background-color: #333333; width:12%;">
+<!---------------left border----------------->
+<div style="position:fixed; left:0.5%; top:4%; background-color: white; width:11%; height:95%;">
+    <!------------Tool table------------->
+        <div class="panel panel-default" style="position:fixed; left:0.5%; top:4%; width:11%; box-sizing: border-box;height:45%;">
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <label style="text-align:center; width:11%; height:3%; top:4.5%; position:fixed;">Shape</label>
+                <div style="overflow: auto; position:fixed; top:8.5%; height:40%; width:11%; " >
+                    <table class="table" >
+                        <tbody th:each="shape : ${project.getProject_Shape()}">
+                        <tr>
+                            <td><input type="radio" name="shape" th:value="${shape.getShape()}"></input></td>
+                            <td th:text="${shapeStat.count}+'. '+${shape.getShape()}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+
+
+    <div class="panel panel-default"style="position:fixed; left:0.5%; bottom:0.5%; width:11%; box-sizing: border-box; height:45%;">
+        <!-- /.panel-heading -->
+
+        <div class="panel-body">
+
+            <label style="text-align:center; width:11%; height:3%; bottom:40.5%; position:fixed;">Object</label>
+            <div style="overflow: auto; position:fixed;height:40%; width:11%; bottom:0.5%;" >
+                <table class="table" >
+
+                    <tbody th:each="shape : ${project.getProject_Shape()}">
+                    <tr>
+                        <td th:text="${shapeStat.count}"></td>
+                        <td th:text="${shape.getShape()}"></td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+            <!-- /.table-responsive -->
+        </div>
+        <!-- /.panel-body -->
+    </div>
+        <!-- /.panel -->
+</div>
+</div>
+
+
+
+
+<!--------------------top panel------------------->
+<div style="position:fixed; left:0; top:0; height:4%;background-color: #333333; width:100%;">
+    <Label style="position:fixed; left:0.5%; top:0.2%; color:white; font-size:15pt;" th:text="${project.getProject_Basic().getProjectname()}"></Label>
+    <p type="button" class="fa fa-arrow-left" style=" color:white; position:fixed; top:1%; right: 15%;" ></p>
+    <p type="button" class="fa fa-arrow-right" style=" color:white; position:fixed; top:1%; right: 13%;" ></p>
+    <button type="button" class="btn btn-link" style="color:white; position:fixed; right:8.5%; width:3%; top:0.5%; height: 3%; line-height:0;">Skip</button>
+    <button type="button" class="btn btn-danger" style="position:fixed; right:0.5%; width:7%; top:0.5%; height: 3%; line-height:0;">Submit</button>
+</div>
+
+
+
+
+<!--------------------drawing panel------------------->
+<div id="drawingPanel" style="position:fixed; left:12%; top:4%; width: 76%; height:93%;">
+    <div id="canvas-container"  >
+
+
+    </div>
+</div>
+
+
+
+
+<!--------------------right panel------------------->
+<div style="position:fixed; right:0%; top:4%; height:100%;background-color: #333333; width:12%;">
+    <div style="position:fixed; right:0.5%; top:4%; height:100%;background-color: white; width:11%; height:95%">
+        <div class="panel panel-default" style="position:fixed; right:0.5%; top:4%; width:11%; box-sizing: border-box;height:45%;">
+            <label style="text-align:center; width:11%; height:3%; top:4.5%; position:fixed;">Properties</label>
+
+        </div>
+
+        <div class="panel panel-default" style="position:fixed; right:0.5%; bottom:0.5%; width:11%; box-sizing: border-box;height:45%;">
+            <!-- /.panel-heading -->
+            <div class="panel-body" >
+                <label style="text-align:center; width:11%; height:3%; bottom:40.5%; position:fixed;">ClassName</label>
+                <div style="overflow: auto; position:fixed;height:40%; width:11%; bottom:0.5%;" >
+                    <table class="table" >
+                        <tbody th:each="class : ${project.getProject_Class()}">
+
+                        <tr>
+                            <td><input type="radio" name="className" th:value="${class.getClassname()}"></input></td>
+                            <td th:text="${classStat.count}+'. '+${class.getClassname()}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.table-responsive -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+
+    </div>
+</div>
+
+
+
+<!--------------------bottom panel------------------->
+<div style="position:fixed; left:12%; bottom:0; height:4%;background-color: #333333; width:76%;">
+
+
+</div>
+<!--------------------------------------------------->
+</body>
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="../vendor/jquery/jquery.min.js"></script>
+<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="../js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="../vendor/chart.js/Chart.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="../js/demo/chart-area-demo.js"></script>
+<script src="../js/demo/chart-pie-demo.js"></script>
+
+<script>
+      ///////////////////////////전역변수////////////////////////////
+       canvasX = 0;
+       canvasY  = 0;
+       canvas =  document.createElement('canvas');
+       var context = canvas.getContext('2d');
+       drawing = false;
+       className = "";
+       shape = "";
+      ///////////////////////////로드////////////////////////////
+      window.onload = function() {
+
+        var drawingPanel = document.getElementById('drawingPanel');
+        canvas.width = drawingPanel.clientWidth;
+        canvas.height = drawingPanel.clientHeight;
+
+        var container = document.getElementById('canvas-container');
+        container.appendChild(canvas);
+
+        canvasX = canvas.getBoundingClientRect().left;
+        canvasY = canvas.getBoundingClientRect().top;
+
+        context.fillStyle = 'black';
+        context.strokeStyle = 'black';
+        canvas.addEventListener("mousedown",function(e){mouseDown(e)});
+        canvas.addEventListener("mouseup",function(e){mouseUp(e)});
+        canvas.addEventListener("mousemove",function(e){mouseMove(e)});
+    }
+
+
+
+    function getInfo() {
+        className = getSelectedClassName();
+        shape = getSelectedShape();
+        console.log(className);
+        console.log(shape);
+    }
+
+    function getSelectedShape() {
+        var shape_length = document.getElementsByName("shape").length;
+        for (var i=0; i<shape_length; i++) {
+            if (document.getElementsByName("shape")[i].checked == true) {
+                return document.getElementsByName("shape")[i].value;
+            }
+        }
+        return "";
+    }
+
+    function getSelectedClassName() {
+          var className_length = document.getElementsByName("className").length;
+
+        for (var i=0; i<className_length; i++) {
+            if (document.getElementsByName("className")[i].checked == true) {
+                return document.getElementsByName("className")[i].value;
+            }
+        }
+        return "";
+    }
+
+    function mouseDown(e) {
+        initX = e.clientX;
+        initY = e.clientY;
+        drawing = true;
+        getInfo();
+    }
+
+    function mouseUp(e) {
+        drawing = false;
+    }
+
+    function mouseMove(e) {
+            if(drawing){
+            endX = e.clientX;
+            endY = e.clientY;
+             }else{
+
+        }
+    }
+
+    window.onresize = function() {
+	    canvasX = canvas.getBoundingClientRect().left;
+        canvasY = canvas.getBoundingClientRect().top;
+    }
+
+    </script>
+</body>
+
+</html>
