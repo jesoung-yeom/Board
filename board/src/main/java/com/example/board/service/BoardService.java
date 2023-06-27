@@ -36,5 +36,6 @@ public class BoardService {
 
     public Board findOneById(Long id) {
         return this.boardRepository.findOneById(id);
+
     }
 }

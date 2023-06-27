@@ -46,7 +46,7 @@ public class BoardController {
     public String alert(Model model, String comment, String searchUrl){
         model.addAttribute("message", comment);
         model.addAttribute("searchUrl", searchUrl);
-
+    //테스트
         return "alert";
     }
 }
