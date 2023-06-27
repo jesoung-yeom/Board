@@ -42,13 +42,7 @@ public class AccountRepository {
         return null;
     }
     public Account findOneAccountByUid(Long uid) {
-        List<Account> allList = findAllAccount();
-        for(int i = 0; i<allList.size();i++) {
-            if(uid.equals(allList.get(i).getUid())){
-                return allList.get(i);
-            }
-        }
-        return null;
+        return this.em.find(Account.class,uid);
     }
 
     public List<Account> findAllAccount() {

@@ -87,42 +87,37 @@
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
-
-                <!-- DataTales Example -->
-                <div class="card shadow mb-4 col-md-12">
-                    <div class="card-header py-3 row">
-                        <div class="col-md-8">
-                            <h6 class="font-weight-bold text-primary" style="font-size: 20px;">Board</h6>
-                        </div>
-                            <div class="col-md-4">
-                            <a href="/index/write" style="float:right;" type="button" class="btn btn-primary">Write</a>
-                        </div>
-
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                <thead>
-                                <tr>
-                                    <th width="200px">Name</th>
-                                    <th>Title</th>
-                                    <th width="250px">Date</th>
-                                </tr>
-                                </thead>
-                                <tbody th:each="list : ${boardlist}">
-                                <tr>
-                                    <td th:text="${listStat.count}"></td>
-                                    <td><a th:text="${list.getTitle()}" th:href="@{/index/board?id=}+${list.getId()}"></a></td>
-                                    <td th:text="${list.getDate()}"></td>
-
-                                </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">New Board</h1>
                 </div>
+                <hr/>
+                <form class="user" onsubmit="return checkblank();"  action="/createboard" method="post" >
+                    <div class="form-group row">
+                        <div class="col-sm-12 mb-3 mb-sm-0">
+                            <label>   Title   </label>
+                            <input type="text" class="form-control" style="height:50px;" id="title" name="title"
+                                   placeholder="Title...">
+                        </div>
+
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 mb-3 mb-sm-0">
+                            <label> Contents </label>
+                            <textarea type="text" class="form-control " style="height: 400px;" id="contents" name="contents"
+                                      placeholder="Contents ..."></textarea>
+                        </div>
+                    </div>
+
+                    <hr/>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                            Write
+                        </button>
+                    </div>
+
+                </form>
+
+
 
             </div>
             <!-- /.container-fluid -->
@@ -171,7 +166,20 @@
         </div>
     </div>
 </div>
+<script>
+    function checkblank() {
+        var title = document.getElementById('title');
+        var contents = document.getElementById('contents');
+        if (title.value == "" || contents.value == "") {
+            alert("빈 칸을 모두 입력을 해야 합니다.");
+            return false;
+        }else{
+            return true;
+        }
+    }
 
+
+</script>
 
 <!-- Bootstrap core JavaScript-->
 <script src="../vendor/jquery/jquery.min.js"></script>
@@ -183,18 +191,10 @@
 <!-- Custom scripts for all pages-->
 <script src="../js/sb-admin-2.min.js"></script>
 
-<!-- Page level plugins -->
-<script src="../vendor/chart.js/Chart.min.js"></script>
 
-<!-- Page level custom scripts -->
-<script src="../js/demo/chart-area-demo.js"></script>
-<script src="../js/demo/chart-pie-demo.js"></script>
-<!-- Page level plugins -->
-<script src="vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-<!-- Page level custom scripts -->
-<script src="js/demo/datatables-demo.js"></script>
+
+
 </body>
 
 </html>
