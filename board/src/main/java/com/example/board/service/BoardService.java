@@ -1,41 +1,37 @@
 package com.example.board.service;
 
-import com.example.board.domain.Board;
-import com.example.board.form.BoardForm;
+import com.example.board.model.Board;
+import com.example.board.model.dto.BoardListDto;
+import com.example.board.repository.AccountRepository;
 import com.example.board.repository.BoardRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
+@RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    @Autowired
-    public BoardService(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
+    private final AccountRepository accountRepository;
+
+    public List<BoardListDto> findAll(){
+        List<Board> boardList = this.boardRepository.findAll();
+        List<BoardListDto> boardDtoList = new ArrayList<>();
+        for(int i = 0; i < boardList.size(); i++) {
+            BoardListDto boardListDto = BoardListDto.builder()
+                    .title(boardList.get(i).getTitle())
+                    .content(boardList.get(i).getContent())
+                    .date(boardList.get(i).getDate())
+                    .name(accountRepository.findByUid(boardList.get(i).getUid()).getName())
+                    .build();
+            boardDtoList.add(boardListDto);
+        }
+        return boardDtoList;
     }
 
-    public List<Board> findAllBoards(){
-        return this.boardRepository.findAllBoards();
-    }
-
-    public boolean createBorad(BoardForm boardForm, Long accountuid) {
-        Board board = new Board();
-        board.setUid(accountuid);
-        board.setTitle(boardForm.getTitle());
-        board.setContent(boardForm.getContents());
-        Date utilDate = new Date();
-        java.sql.Date date = new java.sql.Date(utilDate.getTime());
-        board.setDate(date);
-        return this.boardRepository.create(board);
-    }
-
-    public Board findOneById(Long id) {
-        return this.boardRepository.findOneById(id);
-
-    }
 }

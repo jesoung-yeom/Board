@@ -1,62 +1,17 @@
 package com.example.board.repository;
 
-import com.example.board.domain.Account;
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import com.example.board.model.Account;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 
 @Repository
-@RequiredArgsConstructor
-@Transactional
-public class AccountRepository {
-    private final EntityManager em;
+public interface AccountRepository extends JpaRepository<Account,Long> {
 
-//    public boolean test(){
-//        em.createQuery("ALTER TABLE 'Account' AUTO_INCREMENT=1;" +
-//                "SET @COUNT = 0;" +
-//                "UPDATE 'Account' SET  = @COUNT:=@COUNT+1;");
-//
-//        return true;
-//    }
+    Account findByIdAndPw(String id, String pw);
 
-    public Account findOneAccount(String id, String pw) {
-        List<Account> allList = findAllAccount();
-        for(int i = 0; i<allList.size();i++) {
-            if(id.equals(allList.get(i).getId())&&pw.equals(allList.get(i).getPw())){
-                return allList.get(i);
-            }
-        }
-        return null;
-    }
-    public Account findOneAccountById(String id) {
-        List<Account> allList = findAllAccount();
-        for(int i = 0; i<allList.size();i++) {
-            if(id.equals(allList.get(i).getId())){
-                return allList.get(i);
-            }
-        }
-        return null;
-    }
-    public Account findOneAccountByUid(Long uid) {
-        return this.em.find(Account.class,uid);
-    }
+    Account findByUid(Long uid);
 
-    public List<Account> findAllAccount() {
-        return em.createQuery("select c from Account c", Account.class).getResultList();
-    }
-    @Transactional
-    public void saveAccount(Account account) {
-        em.persist(account);
-    }
-
-//    @Transactional
-//    public void update(Account account){
-//        em.persist(account);
-//    }
-
+    Account save(Account account);
 
 }

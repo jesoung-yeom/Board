@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판</title>
+</head>
+<body>
+<header>
+
+</header>
+<main>
+    <div>
+        <label style="font-size: 30px;" >게시판</label>
+        <table>
+            <thead>
+                <tr>이름</tr>
+                <tr>제목</tr>
+                <tr>날짜</tr>
+            </thead>
+            <tbody>
+                <tr th:each="board : ${boardList}" >
+                    <td th:text="${board.getName()}"></td>
+                    <td th:text="${board.getTitle()}"></td>
+                    <td th:text="${board.getDate()}"></td>
+                </tr>
+
+            </tbody>
+
+        </table>
+        <button type="button" onclick="location.href='/Home/Write'">작성</button>
+    </div>
+</main>
+<footer>
+
+</footer>
+</body>
+</html>
