@@ -58,4 +58,22 @@ public class BoardService {
         return this.boardRepository.save(board);
     }
 
+    public boolean update(BoardDto boardDto) {
+        Board board = new Board();
+        board.setId(boardDto.getId())
+                .setTitle(boardDto.getTitle())
+                .setContent(boardDto.getContent())
+                .setCreatedAt(this.boardRepository.findById(board.getId()).get().getCreatedAt())
+                .setUpdatedAt(Date.valueOf(LocalDate.now()))
+                .setUserId(boardDto.getUserId());
+
+        try {
+            this.boardRepository.save(board);
+
+            return true;
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
 }

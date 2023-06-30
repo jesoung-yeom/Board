@@ -34,4 +34,27 @@ public class BoardController {
 
         return "board";
     }
+    @GetMapping("/home/board/update")
+    public String showUpdateBoard(@RequestParam("id") Long id, Model model) {
+        model.addAttribute("boardDto", this.boardService.findById(id));
+        System.out.println("asd");
+        return "board-update";
+    }
+
+    @PostMapping("/home/board/update")
+    public String updateBoard(@RequestParam("id") Long id, HttpSession session, BoardDto boardDto, Model model) {
+        boardDto.setId(id);
+        boardDto.setUserId(session.getAttribute("userId").toString());
+        if (this.boardService.update(boardDto)) {
+
+            return "redirect:/home";
+        } else {
+            model.addAttribute("message", "수정오류");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
+    }
+
+
 }
