@@ -2,7 +2,6 @@ package com.example.board.controller;
 
 
 import com.example.board.model.dto.AccountDto;
-import com.example.board.model.dto.RegistDto;
 import com.example.board.service.LoginService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +22,10 @@ public class LoginController {
         return "Login";
     }
 
-    @PostMapping("/login")
-    public String login(AccountDto accountDto, Model model, HttpSession session) {
-        if (loginService.login(accountDto)) {
+    @PostMapping("/signin")
+    public String signIn(AccountDto accountDto, Model model, HttpSession session) {
+        if (loginService.signIn(accountDto)) {
+            session.setAttribute("userId", accountDto.getUserId());
             return "redirect:/home";
         } else {
             return "redirect:/";
