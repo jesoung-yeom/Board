@@ -9,11 +9,13 @@ import java.sql.Date;
 @Builder
 public class BoardDto {
 
+    private Long id;
+
     private String title;
 
     private String content;
 
-    private String userName;
+    private String userId;
 
     private Date createdAt;
 
