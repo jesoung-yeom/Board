@@ -10,7 +10,7 @@
 </header>
 <main>
     <div>
-        <label style="font-size: 30px;" >게시판</label>
+        <label style="font-size: 30px;">게시판</label>
         <table>
             <thead>
                 <tr>이름</tr>
@@ -18,16 +18,14 @@
                 <tr>날짜</tr>
             </thead>
             <tbody>
-                <tr th:each="board : ${boardList}" >
+                <tr th:each="board : ${boardList}">
                     <td th:text="${board.getUserName()}"></td>
                     <td th:text="${board.getTitle()}"></td>
                     <td th:text="${board.getCreatedAt()}"></td>
                 </tr>
-
             </tbody>
-
         </table>
-        <button type="button" onclick="location.href='/Home/Write'">작성</button>
+        <button type="button" onclick="location.href='/home/board/write'">작성</button>
     </div>
 </main>
 <footer>

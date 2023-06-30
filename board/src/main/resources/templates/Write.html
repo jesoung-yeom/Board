@@ -13,14 +13,19 @@
         <div>
             <label>작성</label>
         </div>
-        <div>
-            <label>제목</label>
-            <textarea id="title" name="title"></textarea>
-        </div>
-        <div>
-            <label>내용</label>
-            <textarea id="content" name="content"></textarea>
-        </div>
+        <hr/>
+        <form action="/home/board/write" method="post">
+            <div>
+                <label>제목</label>
+                <textarea id="title" name="title"></textarea>
+            </div>
+            <div>
+                <label>내용</label>
+                <textarea id="content" name="content"></textarea>
+            </div>
+            <hr/>
+            <button type="submit">작성</button>
+        </form>
     </div>
 </main>
 <footer>

@@ -1,7 +1,7 @@
 package com.example.board.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Entity
