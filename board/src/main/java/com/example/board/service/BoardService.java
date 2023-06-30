@@ -37,6 +37,7 @@ public class BoardService {
         List<BoardDto> boardDtoList = new ArrayList<>();
         for (int i = 0; i < boardList.size(); i++) {
             BoardDto boardListDto = BoardDto.builder()
+                    .id(boardList.get(i).getId())
                     .title(boardList.get(i).getTitle())
                     .content(boardList.get(i).getContent())
                     .createdAt(boardList.get(i).getCreatedAt())
@@ -55,7 +56,19 @@ public class BoardService {
                 .setContent(boardDto.getContent())
                 .setCreatedAt(Date.valueOf(LocalDate.now()))
                 .setUserId(boardDto.getUserId());
+
         return this.boardRepository.save(board);
+    }
+
+    public boolean delete(long id) {
+        try {
+            this.boardRepository.deleteById(id);
+
+            return true;
+        } catch (Exception e) {
+
+            return false;
+        }
     }
 
     public boolean update(BoardDto boardDto) {
