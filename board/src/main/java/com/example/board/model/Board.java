@@ -17,8 +17,8 @@ public class Board {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "uid")
-    private Long uid;
+    @Column(name = "user_id")
+    private String userId;
 
     @Column(name = "title")
     private String title;
@@ -26,7 +26,10 @@ public class Board {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "date")
-    private Date date;
+    @Column(name = "created_at")
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
 }

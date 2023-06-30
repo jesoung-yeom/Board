@@ -26,8 +26,9 @@ public class BoardService {
             BoardListDto boardListDto = BoardListDto.builder()
                     .title(boardList.get(i).getTitle())
                     .content(boardList.get(i).getContent())
-                    .date(boardList.get(i).getDate())
-                    .name(accountRepository.findByUid(boardList.get(i).getUid()).getName())
+                    .createdAt(boardList.get(i).getCreatedAt())
+                    .updatedAt(boardList.get(i).getUpdatedAt())
+                    .userName(accountRepository.findByUserId(boardList.get(i).getUserId()).getUserName())
                     .build();
             boardDtoList.add(boardListDto);
         }

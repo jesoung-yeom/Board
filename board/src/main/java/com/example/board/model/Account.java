@@ -11,17 +11,17 @@ import lombok.experimental.Accessors;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "uid")
-    private Long uid;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Long id;
 
-    @Column(name = "pw")
-    private String pw;
+    @Column(name = "user_id")
+    private String userId;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "user_pw")
+    private String userPw;
+
+    @Column(name = "user_name")
+    private String userName;
 
 }

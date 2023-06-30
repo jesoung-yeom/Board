@@ -19,9 +19,9 @@
             </thead>
             <tbody>
                 <tr th:each="board : ${boardList}" >
-                    <td th:text="${board.getName()}"></td>
+                    <td th:text="${board.getUserName()}"></td>
                     <td th:text="${board.getTitle()}"></td>
-                    <td th:text="${board.getDate()}"></td>
+                    <td th:text="${board.getCreatedAt()}"></td>
                 </tr>
 
             </tbody>

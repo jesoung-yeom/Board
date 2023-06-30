@@ -14,9 +14,9 @@ public class RegisterService {
 
     public boolean regist(RegistDto registDto) {
         Account account = new Account();
-        account.setId(registDto.getId())
-                .setPw(registDto.getPw())
-                .setName(registDto.getName());
+        account.setUserId(registDto.getUserId())
+                .setUserPw(registDto.getUserPw())
+                .setUserName(registDto.getUserName());
         this.accountRepository.save(account);
         return true;
     }

@@ -5,12 +5,10 @@ import lombok.Data;
 @Data
 public class AccountDto {
 
-    private Long uid;
+    private String userId;
 
-    private String id;
+    private String userPw;
 
-    private String pw;
-
-    private String name;
+    private String userName;
 
 }

@@ -15,7 +15,7 @@ public class LoginService {
     private final AccountRepository accountRepository;
 
     public boolean login(AccountDto accountDto) {
-        Optional<Account> account = Optional.ofNullable(this.accountRepository.findByIdAndPw(accountDto.getId(), accountDto.getPw()));
+        Optional<Account> account = Optional.ofNullable(this.accountRepository.findByUserIdAndUserPw(accountDto.getUserId(), accountDto.getUserPw()));
         return account.isPresent();
     }
 

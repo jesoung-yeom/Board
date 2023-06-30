@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public class RegistDto {
 
-    private String id;
+    private String userId;
 
-    private String pw;
+    private String userPw;
 
-    private String name;
+    private String userName;
 
 }

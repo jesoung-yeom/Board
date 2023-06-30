@@ -13,8 +13,10 @@ public class BoardListDto {
 
     private String content;
 
-    private String name;
+    private String userName;
 
-    private Date date;
+    private Date createdAt;
+
+    private Date updatedAt;
 
 }
