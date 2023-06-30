@@ -25,7 +25,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(AccountDto accountDto, Model model, HttpSession session) {
-        if(loginService.login(accountDto.getId(), accountDto.getPw())) {
+        if (loginService.login(accountDto)) {
             return "redirect:/home";
         } else {
             return "redirect:/";

@@ -18,7 +18,7 @@ public class RegisterController {
         return "Register";
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public String regist(RegistDto registDto) {
         this.registerService.regist(registDto);
         return "Home";

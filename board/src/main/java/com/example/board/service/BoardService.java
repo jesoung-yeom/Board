@@ -19,10 +19,10 @@ public class BoardService {
 
     private final AccountRepository accountRepository;
 
-    public List<BoardListDto> findAll(){
+    public List<BoardListDto> findAll() {
         List<Board> boardList = this.boardRepository.findAll();
         List<BoardListDto> boardDtoList = new ArrayList<>();
-        for(int i = 0; i < boardList.size(); i++) {
+        for (int i = 0; i < boardList.size(); i++) {
             BoardListDto boardListDto = BoardListDto.builder()
                     .title(boardList.get(i).getTitle())
                     .content(boardList.get(i).getContent())

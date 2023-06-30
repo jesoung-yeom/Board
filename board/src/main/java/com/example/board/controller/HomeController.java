@@ -20,10 +20,10 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home(HttpSession session, Model model) {
-        model.addAttribute("boardList",this.boardService.findAll());
+        model.addAttribute("boardList", this.boardService.findAll());
 
-     //   model.addAttribute("boardlist",this.boardService.findAllBoards());
-     //   model.addAttribute("accountname", this.homeService.checkAccount((Long) session.getAttribute("accountuid")).getName());
+        //   model.addAttribute("boardlist",this.boardService.findAllBoards());
+        //   model.addAttribute("accountname", this.homeService.checkAccount((Long) session.getAttribute("accountuid")).getName());
         return "Home";
     }
 
