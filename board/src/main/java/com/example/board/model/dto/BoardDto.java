@@ -7,7 +7,7 @@ import java.sql.Date;
 
 @Data
 @Builder
-public class BoardListDto {
+public class BoardDto {
 
     private String title;
 

@@ -1,7 +1,7 @@
 package com.example.board.service;
 
 import com.example.board.model.Board;
-import com.example.board.model.dto.BoardListDto;
+import com.example.board.model.dto.BoardDto;
 import com.example.board.repository.AccountRepository;
 import com.example.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,11 @@ public class BoardService {
 
     private final AccountRepository accountRepository;
 
-    public List<BoardListDto> findAll() {
+    public List<BoardDto> findAll() {
         List<Board> boardList = this.boardRepository.findAll();
-        List<BoardListDto> boardDtoList = new ArrayList<>();
+        List<BoardDto> boardDtoList = new ArrayList<>();
         for (int i = 0; i < boardList.size(); i++) {
-            BoardListDto boardListDto = BoardListDto.builder()
+            BoardDto boardListDto = BoardDto.builder()
                     .title(boardList.get(i).getTitle())
                     .content(boardList.get(i).getContent())
                     .createdAt(boardList.get(i).getCreatedAt())
