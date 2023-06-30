@@ -2,11 +2,12 @@ package com.example.board.service;
 
 import com.example.board.model.Board;
 import com.example.board.model.dto.BoardDto;
-import com.example.board.repository.AccountRepository;
 import com.example.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +18,6 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    private final AccountRepository accountRepository;
-
     public List<BoardDto> findAll() {
         List<Board> boardList = this.boardRepository.findAll();
         List<BoardDto> boardDtoList = new ArrayList<>();
@@ -28,11 +27,20 @@ public class BoardService {
                     .content(boardList.get(i).getContent())
                     .createdAt(boardList.get(i).getCreatedAt())
                     .updatedAt(boardList.get(i).getUpdatedAt())
-                    .userName(accountRepository.findByUserId(boardList.get(i).getUserId()).getUserName())
+                    .userId(boardList.get(i).getUserId())
                     .build();
             boardDtoList.add(boardListDto);
         }
         return boardDtoList;
+    }
+
+    public Board createBoard(BoardDto boardDto) {
+        Board board = new Board();
+        board.setTitle(boardDto.getTitle())
+                .setContent(boardDto.getContent())
+                .setCreatedAt(Date.valueOf(LocalDate.now()))
+                .setUserId(boardDto.getUserId());
+        return this.boardRepository.save(board);
     }
 
 }

@@ -12,20 +12,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequiredArgsConstructor
 public class BoardController {
 
-    private BoardService boardService;
+    private final BoardService boardService;
 
-    @GetMapping("/home/board/write")
+    @GetMapping("/home/createboard")
     public String showWrite() {
         return "Write";
     }
 
-    @PostMapping("/home/board/write")
-    public String write(HttpSession session, BoardDto boardDto) {
-        // boardDto.setUserName(session.getAttribute("userId").toString());
-        //his.boardService.wrtie()
-
-        return null;
+    @PostMapping("/home/createboard")
+    public String createBoard(HttpSession session, BoardDto boardDto) {
+        boardDto.setUserId(session.getAttribute("userId").toString());
+        this.boardService.createBoard(boardDto);
+        return "redirect:/home";
     }
-
 
 }

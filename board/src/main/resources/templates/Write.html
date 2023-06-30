@@ -14,7 +14,7 @@
             <label>작성</label>
         </div>
         <hr/>
-        <form action="/home/board/write" method="post">
+        <form action="/home/createboard" onsubmit="return checkEmpty();" method="post">
             <div>
                 <label>제목</label>
                 <textarea id="title" name="title"></textarea>
@@ -24,7 +24,7 @@
                 <textarea id="content" name="content"></textarea>
             </div>
             <hr/>
-            <button type="submit">작성</button>
+            <button type="submit" >작성</button>
         </form>
     </div>
 </main>
@@ -33,3 +33,16 @@
 </footer>
 </body>
 </html>
+<script>
+    function checkEmpty() {
+        var title = document.getElementById("title").value;
+        var content = document.getElementById("content").value;
+        
+        if (title !== "" && content !== "" ) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+</script>
