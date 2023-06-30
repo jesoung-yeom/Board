@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${boardDto.getTitle()}"></title>
+</head>
+<body>
+<header>
+
+</header>
+<main>
+    <div>
+        <label style="font-size: 30px;" th:text="${boardDto.getTitle()}"></label>
+        <hr/>
+        <label th:text="${boardDto.getContent()}" }></label>
+        <hr/>
+        <button type="button" th:onclick="|location.href='@{/home/board/update(id=${boardDto.getId()})}'|">수정</button>
+        <form th:action="@{/home/board/delete(id=${boardDto.getId()})}" th:method="post">
+            <button type="submit">삭제</button>
+        </form>
+        <hr/>
+    </div>
+</main>
+<footer>
+
+</footer>
+</body>
+</html>

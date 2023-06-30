@@ -18,6 +18,20 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
+    public BoardDto findById(Long id) {
+        Board board = this.boardRepository.findById(id).orElse(null);
+        BoardDto boardDto = BoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .userId(board.getUserId())
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
+                .build();
+
+        return boardDto;
+    }
+
     public List<BoardDto> findAll() {
         List<Board> boardList = this.boardRepository.findAll();
         List<BoardDto> boardDtoList = new ArrayList<>();
@@ -31,6 +45,7 @@ public class BoardService {
                     .build();
             boardDtoList.add(boardListDto);
         }
+
         return boardDtoList;
     }
 
