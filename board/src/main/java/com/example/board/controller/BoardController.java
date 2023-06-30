@@ -35,6 +35,20 @@ public class BoardController {
 
         return "board";
     }
+
+    @PostMapping("/home/board/delete")
+    public String deleteBoard(@RequestParam("id") Long id, Model model) {
+        if (this.boardService.delete(id)) {
+
+            return "home";
+        } else {
+            model.addAttribute("message", "삭제오류");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
+    }
+
     @GetMapping("/home/board/update")
     public String showUpdateBoard(@RequestParam("id") Long id, Model model) {
         model.addAttribute("boardDto", this.boardService.findById(id));

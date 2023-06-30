@@ -49,7 +49,7 @@ public class BoardService {
         return boardDtoList;
     }
 
-    public Board createBoard(BoardDto boardDto) {
+    public Board create(BoardDto boardDto) {
         Board board = new Board();
         board.setTitle(boardDto.getTitle())
                 .setContent(boardDto.getContent())
