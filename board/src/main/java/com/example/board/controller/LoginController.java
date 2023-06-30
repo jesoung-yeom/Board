@@ -19,15 +19,17 @@ public class LoginController {
 
     @GetMapping("/")
     public String showLogin(HttpSession session) {
-        return "Login";
+        return "login";
     }
 
     @PostMapping("/signin")
     public String signIn(AccountDto accountDto, Model model, HttpSession session) {
         if (loginService.signIn(accountDto)) {
             session.setAttribute("userId", accountDto.getUserId());
+
             return "redirect:/home";
         } else {
+
             return "redirect:/";
         }
     }

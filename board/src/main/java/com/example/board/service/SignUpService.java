@@ -18,6 +18,7 @@ public class SignUpService {
                 .setUserPw(accountDto.getUserPw())
                 .setUserName(accountDto.getUserName());
         this.accountRepository.save(account);
+
         return true;
     }
 

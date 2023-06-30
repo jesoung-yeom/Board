@@ -18,13 +18,14 @@ public class BoardController {
 
     @GetMapping("/home/createboard")
     public String showWrite() {
-        return "Write";
+        return "write";
     }
 
     @PostMapping("/home/createboard")
-    public String createBoard(HttpSession session, BoardDto boardDto) {
+    public String create(HttpSession session, BoardDto boardDto) {
         boardDto.setUserId(session.getAttribute("userId").toString());
-        this.boardService.createBoard(boardDto);
+        this.boardService.create(boardDto);
+
         return "redirect:/home";
     }
 

@@ -11,7 +11,7 @@
 <main>
 
     <label style="position:fixed; font-size: 30px; left:45%; top:10%;">임시 Register</label>
-    <form th:action="@{/signup}" onsubmit="return checkRegister();" method="post">
+    <form th:action="@{/signup}" onsubmit="return checkEmpty();" method="post">
         <div style="position:fixed; left:45%; top:20%;">
             <div>
                 <label>이름 : </label>
@@ -44,7 +44,7 @@
 </html>
 
 <script>
-    function checkRegister() {
+    function checkEmpty() {
         var userPw = document.getElementById("userPw").value;
         var reconfirmPw = document.getElementById("reconfirmPw").value;
         var userId = document.getElementById("userId").value;

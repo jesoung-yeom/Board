@@ -15,13 +15,14 @@ public class SignUpController {
 
     @GetMapping("/signup")
     public String showSignup() {
-        return "SignUp";
+        return "signUp";
     }
 
     @PostMapping("/signup")
     public String signup(AccountDto accountDto) {
         this.signUpService.signUp(accountDto);
-        return "Home";
+
+        return "home";
     }
 
 }

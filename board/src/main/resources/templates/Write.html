@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<html lang="kr">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -24,7 +24,7 @@
                 <textarea id="content" name="content"></textarea>
             </div>
             <hr/>
-            <button type="submit" >작성</button>
+            <button type="submit">작성</button>
         </form>
     </div>
 </main>
@@ -37,8 +37,8 @@
     function checkEmpty() {
         var title = document.getElementById("title").value;
         var content = document.getElementById("content").value;
-        
-        if (title !== "" && content !== "" ) {
+
+        if (title !== "" && content !== "") {
             return true;
         } else {
             return false;

@@ -20,8 +20,8 @@ public class HomeController {
     @GetMapping("/home")
     public String home(HttpSession session, Model model) {
         model.addAttribute("boardList", this.boardService.findAll());
-        return "Home";
-    }
 
+        return "home";
+    }
 
 }
