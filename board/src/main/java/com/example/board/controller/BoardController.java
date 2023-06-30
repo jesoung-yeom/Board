@@ -52,6 +52,7 @@ public class BoardController {
     @GetMapping("/home/board/update")
     public String showUpdateBoard(@RequestParam("id") Long id, Model model) {
         model.addAttribute("boardDto", this.boardService.findById(id));
+        System.out.println("asd");
         return "board-update";
     }
 
