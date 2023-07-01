@@ -18,11 +18,11 @@
                 <tr>날짜</tr>
             </thead>
             <tbody>
-                <tr th:each="boardDto : ${boardList}">
-                    <td th:text="${boardDto.getUserId()}"></td>
-                    <td><a th:href="@{/home/board(id=${boardDto.getId()})}"  th:text="${boardDto.getTitle()}"></a></td>
-                </tr>
+            <tr th:each="boardDto : ${boardList}">
+                <td th:text="${boardDto.getUserId()}"></td>
+                <td><a th:href="@{/home/board(id=${boardDto.getId()})}" th:text="${boardDto.getTitle()}"></a></td>
                 <td th:text="${boardDto.getUpdatedAt != null ? boardDto.getUpdatedAt() : boardDto.getCreatedAt()}"></td>
+            </tr>
             </tbody>
         </table>
         <button type="button" onclick="location.href='/home/createboard'">작성</button>
