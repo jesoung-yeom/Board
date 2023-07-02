@@ -10,7 +10,7 @@
 </header>
 <main>
     <div>
-        <form th:action="@{/home/board/update}" th:method="post">
+        <form th:action="@{/home/board/update}" onsubmit="return checkEmpty();" th:method="post">
             <input name="id" type="hidden" th:value="${boardDto.getId()}">
             <textarea style="font-size: 30px;" th:text="${boardDto.getTitle()}" id="title" name="title"></textarea>
             <hr/>
@@ -30,3 +30,18 @@
 </footer>
 </body>
 </html>
+<script>
+    function checkEmpty() {
+        var title = document.getElementById("title").value;
+        var content = document.getElementById("content").value;
+
+        if (title !== "" && content !== "") {
+
+            return true;
+        } else {
+
+            return false;
+        }
+
+    }
+</script>
