@@ -22,7 +22,7 @@ public class BoardController {
     }
 
     @PostMapping("/home/createboard")
-    public String create(HttpSession session, BoardDto boardDto) {
+    public String createBoard(HttpSession session, BoardDto boardDto) {
         boardDto.setUserId(session.getAttribute("userId").toString());
         this.boardService.create(boardDto);
 

@@ -60,7 +60,7 @@ public class BoardService {
         return this.boardRepository.save(board);
     }
 
-    public boolean delete(long id) {
+    public boolean delete(Long id) {
         try {
             this.boardRepository.deleteById(id);
 

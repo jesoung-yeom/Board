@@ -13,12 +13,12 @@
         <label style="font-size: 30px;">게시판</label>
         <table>
             <thead>
-               <tr>이름</tr>
-               <tr>제목</tr>
-               <tr>날짜</tr>
+            <tr>이름</tr>
+            <tr>제목</tr>
+            <tr>날짜</tr>
             </thead>
             <tbody>
-            <tr th:each="boardDto : ${boardList}">
+            <tr th:each="boardDto : ${boardDtoList}">
                 <td th:text="${boardDto.getUserId()}"></td>
                 <td><a th:href="@{/home/board(id=${boardDto.getId()})}" th:text="${boardDto.getTitle()}"></a></td>
                 <td th:text="${boardDto.getUpdatedAt != null ? boardDto.getUpdatedAt() : boardDto.getCreatedAt()}"></td>
