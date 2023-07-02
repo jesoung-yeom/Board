@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping("/home/createboard")
     public String showWrite() {
@@ -24,6 +25,7 @@ public class BoardController {
     @GetMapping("/home/board")
     public String showBoard(BoardDto boardDto, Model model) {
         model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
+        model.addAttribute("commentDtoList", this.commentService.findByBoardId(boardDto.getId()));
 
         return "board";
     }

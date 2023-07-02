@@ -23,6 +23,57 @@
             <button type="submit">삭제</button>
         </form>
         <hr/>
+        <h2>댓글</h2>
+        <hr/>
+        <table>
+            <thead>
+            <tr>작성자</tr>
+            <tr>내용</tr>
+            <tr>날짜</tr>
+            </thead>
+            <tbody>
+            <tr th:each="commentList : ${commentDtoList}">
+                <td th:text="${commentList.getUserId()}"></td>
+                <td>
+                    <form th:action="@{/home/board/comment/update}" th:method="post">
+                        <input name="id" type="hidden" th:value="${commentList.getId()}"></input>
+                        <input name="userId" type="hidden" th:value="${commentList.getUserId()}"></input>
+                        <input name="boardId" type="hidden" th:value="${commentList.getBoardId()}"></input>
+                        <input name="createdAt" type="hidden" th:value="${commentList.getCreatedAt()}"></input>
+                        <label th:id="'commentLabel' + ${commentList.getId()}"
+                               th:text="${commentList.getContentOfComment()}"
+                               th:value="${commentList.getContentOfComment()}"></label>
+                        <textarea th:id="'commentTextarea'+${commentList.getId()}" name="contentOfComment"
+                                  th:text="${commentList.getContentOfComment()}" class="hidden"></textarea>
+                        <button th:id="'fixButton'+${commentList.getId()}" type="button"
+                                th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">수정
+                        </button>
+                        <button th:id="'completeButton'+${commentList.getId()}" class="hidden" type="submit">완료</button>
+                    </form>
+                </td>
+                <td th:text="${commentList.getUpdatedAt() != null ? commentList.getUpdatedAt() : commentList.getCreatedAt()}"></td>
+
+                <td>
+                    <form th:id="'deleteButton'+${commentList.getId()}" th:action="@{/home/board/comment/delete}"
+                          th:method="post">
+                        <input name="id" type="hidden" th:value="${commentList.getId()}">
+                        <input name="boardId" type="hidden" th:value="${commentList.getBoardId()}">
+                        <button type="submit">삭제</button>
+                    </form>
+                    <button th:id="'cancelButton'+${commentList.getId()}" class="hidden" type="button"
+                            th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">취소
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <hr/>
+        <label>댓글작성</label>
+        <form th:action="@{/home/board/comment/create}" method="post">
+            <input name="boardId" type="hidden" th:value="${boardDto.getId()}">
+            <textarea id="contentOfComment" name="contentOfComment"></textarea>
+            <button type="submit">작성</button>
+        </form>
     </div>
 </main>
 <footer>
@@ -31,3 +82,33 @@
 </body>
 </html>
 
+<script>
+    function convertToTextarea(commentId) {
+        var label = document.getElementById("commentLabel" + commentId);
+        var textarea = document.getElementById("commentTextarea" + commentId);
+        var fixButton = document.getElementById("fixButton" + commentId);
+        var completeButton = document.getElementById("completeButton" + commentId);
+        var deleteButton = document.getElementById("deleteButton" + commentId);
+        var cancelButton = document.getElementById("cancelButton" + commentId);
+
+        console.log(textarea.value);
+        if (label.classList.contains("hidden")) {
+            label.classList.remove("hidden");
+            textarea.classList.add("hidden");
+            completeButton.classList.add("hidden");
+            fixButton.classList.remove("hidden");
+            cancelButton.classList.add("hidden");
+            deleteButton.classList.remove("hidden");
+
+        } else {
+            label.classList.add("hidden");
+            textarea.classList.remove("hidden");
+            fixButton.classList.add("hidden");
+            completeButton.classList.remove("hidden");
+            deleteButton.classList.add("hidden");
+            cancelButton.classList.remove("hidden");
+            textarea.value = label.innerText;
+
+        }
+    }
+</script>
