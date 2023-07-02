@@ -2,13 +2,13 @@ package com.example.board.controller;
 
 import com.example.board.model.dto.BoardDto;
 import com.example.board.service.BoardService;
+import com.example.board.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,6 +21,13 @@ public class BoardController {
         return "write";
     }
 
+    @GetMapping("/home/board")
+    public String showBoard(BoardDto boardDto, Model model) {
+        model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
+
+        return "board";
+    }
+
     @PostMapping("/home/createboard")
     public String createBoard(HttpSession session, BoardDto boardDto) {
         boardDto.setUserId(session.getAttribute("userId").toString());
@@ -29,16 +36,10 @@ public class BoardController {
         return "redirect:/home";
     }
 
-    @GetMapping("/home/board")
-    public String showBoard(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("boardDto", this.boardService.findById(id));
-
-        return "board";
-    }
 
     @PostMapping("/home/board/delete")
-    public String deleteBoard(@RequestParam("id") Long id, Model model) {
-        if (this.boardService.delete(id)) {
+    public String deleteBoard(BoardDto boardDto, Model model) {
+        if (this.boardService.delete(boardDto.getId())) {
 
             return "home";
         } else {
@@ -49,15 +50,15 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/home/board/update")
-    public String showUpdateBoard(@RequestParam("id") Long id, Model model) {
-        model.addAttribute("boardDto", this.boardService.findById(id));
+    @GetMapping("/home/board/show-update")
+    public String showUpdateBoard(BoardDto boardDto, Model model) {
+        model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
+
         return "board-update";
     }
 
     @PostMapping("/home/board/update")
-    public String updateBoard(@RequestParam("id") Long id, HttpSession session, BoardDto boardDto, Model model) {
-        boardDto.setId(id);
+    public String updateBoard(HttpSession session, BoardDto boardDto, Model model) {
         boardDto.setUserId(session.getAttribute("userId").toString());
         if (this.boardService.update(boardDto)) {
 

@@ -14,8 +14,12 @@
         <hr/>
         <label th:text="${boardDto.getContent()}" }></label>
         <hr/>
-        <button type="button" th:onclick="|location.href='@{/home/board/update(id=${boardDto.getId()})}'|">수정</button>
-        <form th:action="@{/home/board/delete(id=${boardDto.getId()})}" th:method="post">
+        <form th:action="@{/home/board/show-update}" method="get">
+            <input name="id" class="hidden" th:value="${boardDto.getId()}">
+            <button type="submit">수정</button>
+        </form>
+        <form th:action="@{/home/board/delete}" th:method="post">
+            <input name="id" type="hidden" th:value="${boardDto.getId()}">
             <button type="submit">삭제</button>
         </form>
         <hr/>
