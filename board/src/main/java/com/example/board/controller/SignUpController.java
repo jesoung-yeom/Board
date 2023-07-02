@@ -4,6 +4,7 @@ import com.example.board.model.dto.AccountDto;
 import com.example.board.service.SignUpService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -19,11 +20,17 @@ public class SignUpController {
     }
 
     @PostMapping("/signup")
-    public String signup(AccountDto accountDto) {
-        this.signUpService.signUp(accountDto);
+    public String signup(AccountDto accountDto, Model model) {
+        if (this.signUpService.signUp(accountDto)) {
 
-        return "home";
+            return "home";
+        } else {
+            model.addAttribute("message", "생성오류");
+            model.addAttribute("replaceUrl", "/signup");
+
+            return "alert";
+        }
+
     }
-
 }
 

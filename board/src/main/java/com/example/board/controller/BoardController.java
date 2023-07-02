@@ -27,7 +27,15 @@ public class BoardController {
         model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
         model.addAttribute("commentDtoList", this.commentService.findByBoardId(boardDto.getId()));
 
-        return "board";
+        if (boardDto.getId() != null) {
+
+            return "board";
+        } else {
+            model.addAttribute("message", "조회오류");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
     }
 
     @PostMapping("/home/createboard")
@@ -43,7 +51,7 @@ public class BoardController {
     public String deleteBoard(BoardDto boardDto, Model model) {
         if (this.boardService.delete(boardDto.getId())) {
 
-            return "home";
+            return "redirect:/home";
         } else {
             model.addAttribute("message", "삭제오류");
             model.addAttribute("replaceUrl", "/home");
@@ -55,8 +63,15 @@ public class BoardController {
     @GetMapping("/home/board/show-update")
     public String showUpdateBoard(BoardDto boardDto, Model model) {
         model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
+        if (boardDto.getId() != null) {
 
-        return "board-update";
+            return "board-update";
+        } else {
+            model.addAttribute("message", "조회오류");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
     }
 
     @PostMapping("/home/board/update")
