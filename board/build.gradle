@@ -27,6 +27,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "com.h2database:h2"
+    implementation 'org.webjars:bootstrap:5.0.2'
+    implementation 'org.webjars.npm:summernote:0.8.18'
+    implementation 'org.webjars:jquery:3.6.0'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
