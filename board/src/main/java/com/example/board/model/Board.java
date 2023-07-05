@@ -8,7 +8,7 @@ import java.sql.Date;
 
 @Entity
 @Data
-@Table
+@Table(name = "board_info")
 @Accessors(chain = true)
 public class Board {
 
@@ -17,8 +17,8 @@ public class Board {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "account_email")
+    private String userEmail;
 
     @Column(name = "title")
     private String title;

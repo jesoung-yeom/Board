@@ -6,22 +6,19 @@ import lombok.experimental.Accessors;
 
 @Entity
 @Data
-@Table
+@Table(name = "account")
 @Accessors(chain = true)
 public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "email")
+    private String userEmail;
 
-    @Column(name = "user_id")
-    private String userId;
-
-    @Column(name = "user_pw")
+    @Column(name = "password")
     private String userPw;
 
-    @Column(name = "user_name")
+    @Column(name = "name")
     private String userName;
 
 }

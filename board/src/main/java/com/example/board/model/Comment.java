@@ -9,7 +9,7 @@ import java.sql.Date;
 
 @Entity
 @Data
-@Table
+@Table(name = "board_comment")
 @Accessors(chain = true)
 public class Comment {
 
@@ -18,13 +18,13 @@ public class Comment {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "board_id")
+    @Column(name = "board_info_id")
     private Long boardId;
 
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "account_email")
+    private String userEmail;
 
-    @Column(name = "content_of_comment")
+    @Column(name = "content")
     private String contentOfComment;
 
     @Column(name = "created_at")
