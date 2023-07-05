@@ -45,28 +45,29 @@
                         <input name="userEmail" type="hidden" th:value="${commentList.getUserEmail()}"></input>
                         <input name="boardId" type="hidden" th:value="${commentList.getBoardId()}"></input>
                         <input name="createdAt" type="hidden" th:value="${commentList.getCreatedAt()}"></input>
-                        <label th:id="'commentLabel' + ${commentList.getId()}"
+                        <label th:id="'comment-label' + ${commentList.getId()}"
                                th:text="${commentList.getContentOfComment()}"
                                th:value="${commentList.getContentOfComment()}"></label>
-                        <textarea th:id="'commentTextarea'+${commentList.getId()}" name="contentOfComment"
+                        <textarea th:id="'comment-textarea'+${commentList.getId()}" name="contentOfComment"
                                   th:text="${commentList.getContentOfComment()}" class="hidden"></textarea>
-                        <button th:id="'fixButton'+${commentList.getId()}" type="button"
-                                th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">수정
+                        <button th:id="'fix-button'+${commentList.getId()}" type="button"
+                                th:onclick="'convert-to-textarea(\'' + ${commentList.getId()} + '\')'">수정
                         </button>
-                        <button th:id="'completeButton'+${commentList.getId()}" class="hidden" type="submit">완료</button>
+                        <button th:id="'complete-button'+${commentList.getId()}" class="hidden" type="submit">완료
+                        </button>
                     </form>
                 </td>
                 <td th:text="${commentList.getUpdatedAt() != null ? commentList.getUpdatedAt() : commentList.getCreatedAt()}"></td>
 
                 <td>
-                    <form th:id="'deleteButton'+${commentList.getId()}" th:action="@{/home/board/comment/delete}"
+                    <form th:id="'delete-button'+${commentList.getId()}" th:action="@{/home/board/comment/delete}"
                           th:method="post">
                         <input name="id" type="hidden" th:value="${commentList.getId()}">
                         <input name="boardId" type="hidden" th:value="${commentList.getBoardId()}">
                         <button type="submit">삭제</button>
                     </form>
-                    <button th:id="'cancelButton'+${commentList.getId()}" class="hidden" type="button"
-                            th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">취소
+                    <button th:id="'cancel-button'+${commentList.getId()}" class="hidden" type="button"
+                            th:onclick="'convert-to-textarea(\'' + ${commentList.getId()} + '\')'">취소
                     </button>
                 </td>
             </tr>
@@ -76,7 +77,7 @@
         <label>댓글작성</label>
         <form th:action="@{/home/board/comment/create}" onsubmit="return checkCreateEmpty();" method="post">
             <input name="boardId" type="hidden" th:value="${boardDto.getId()}">
-            <textarea id="contentOfComment" name="contentOfComment"></textarea>
+            <textarea id="content-of-comment" name="contentOfComment"></textarea>
             <button type="submit">작성</button>
         </form>
     </div>
@@ -102,8 +103,8 @@
     }
 
     function checkFixConent(commentId) {
-        var content = document.getElementById("commentTextarea" + commentId).value;
         console.log(content.value);
+        var content = document.getElementById("comment-textarea" + commentId).value;
         if (content !== "") {
 
             return true;
@@ -113,12 +114,12 @@
     }
 
     function convertToTextarea(commentId) {
-        var label = document.getElementById("commentLabel" + commentId);
-        var textarea = document.getElementById("commentTextarea" + commentId);
-        var fixButton = document.getElementById("fixButton" + commentId);
-        var completeButton = document.getElementById("completeButton" + commentId);
-        var deleteButton = document.getElementById("deleteButton" + commentId);
-        var cancelButton = document.getElementById("cancelButton" + commentId);
+        var label = document.getElementById("comment-label" + commentId);
+        var textarea = document.getElementById("comment-textarea" + commentId);
+        var fixButton = document.getElementById("fix-button" + commentId);
+        var completeButton = document.getElementById("complete-button" + commentId);
+        var deleteButton = document.getElementById("delete-button" + commentId);
+        var cancelButton = document.getElementById("cancel-button" + commentId);
 
         if (label.classList.contains("hidden")) {
             label.classList.remove("hidden");
