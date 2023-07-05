@@ -50,15 +50,17 @@ public class BoardController {
 
     @PostMapping("/board/create")
     public String createBoard(HttpSession session, BoardDto boardDto) {
-        this.boardService.create(boardDto);
         boardDto.setUserEmail(session.getAttribute("user-email").toString());
+        boardDto.setId(this.boardService.create(boardDto).getId());
+        this.boardFileService.create(boardDto);
 
         return "redirect:/home";
     }
 
     @PostMapping("/board/delete")
     public String deleteBoard(BoardDto boardDto, Model model) {
-        if (this.boardService.delete(boardDto.getId())) {
+        this.boardService.delete(boardDto);
+        if (this.boardFileService.delete(boardDto)) {
 
             return "redirect:/home";
         } else {

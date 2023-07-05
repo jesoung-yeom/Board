@@ -2,7 +2,7 @@
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${boardDto.getTitle()}"></title>
+    <title text="${boardDto.getTitle()}"></title>
     <style>
         .hidden {
             display: none;
@@ -15,9 +15,9 @@
 </header>
 <main>
     <div>
-        <label style="font-size: 30px;" th:text="${boardDto.getTitle()}"></label>
+        <label style="font-size: 30px;" th:utext="${boardDto.getTitle()}"></label>
         <hr/>
-        <label th:text="${boardDto.getContent()}" }></label>
+        <label th:utext="${boardDto.getContent()}" }></label>
         <hr/>
         <form th:action="@{/home/board/update}" method="get">
             <input name="id" class="hidden" th:value="${boardDto.getId()}">
