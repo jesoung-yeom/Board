@@ -19,7 +19,7 @@
         <hr/>
         <label th:text="${boardDto.getContent()}" }></label>
         <hr/>
-        <form th:action="@{/home/board/show-update}" method="get">
+        <form th:action="@{/home/board/update}" method="get">
             <input name="id" class="hidden" th:value="${boardDto.getId()}">
             <button type="submit">수정</button>
         </form>

@@ -1,6 +1,7 @@
 package com.example.board.controller;
 
 import com.example.board.model.dto.BoardDto;
+import com.example.board.service.BoardFileService;
 import com.example.board.service.BoardService;
 import com.example.board.service.CommentService;
 import jakarta.servlet.http.HttpSession;
@@ -9,20 +10,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("home")
 public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
 
-    @GetMapping("/home/createboard")
-    public String showWrite() {
-        return "write";
+    @GetMapping("")
+    public String home(HttpSession session, Model model) {
+        model.addAttribute("boardDtoList", this.boardService.findAll());
+
+        return "home";
     }
 
-    @GetMapping("/home/board")
+    @GetMapping("/board")
     public String showBoard(BoardDto boardDto, Model model) {
         model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
         model.addAttribute("commentDtoList", this.commentService.findByBoardId(boardDto.getId()));
@@ -38,7 +43,12 @@ public class BoardController {
         }
     }
 
-    @PostMapping("/home/createboard")
+    @GetMapping("/board/create")
+    public String showWrite() {
+        return "write";
+    }
+
+    @PostMapping("/board/create")
     public String createBoard(HttpSession session, BoardDto boardDto) {
         boardDto.setUserId(session.getAttribute("userId").toString());
         this.boardService.create(boardDto);
@@ -46,8 +56,7 @@ public class BoardController {
         return "redirect:/home";
     }
 
-
-    @PostMapping("/home/board/delete")
+    @PostMapping("/board/delete")
     public String deleteBoard(BoardDto boardDto, Model model) {
         if (this.boardService.delete(boardDto.getId())) {
 
@@ -60,7 +69,7 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/home/board/show-update")
+    @GetMapping("/board/update")
     public String showUpdateBoard(BoardDto boardDto, Model model) {
         model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
         if (boardDto.getId() != null) {
@@ -74,7 +83,7 @@ public class BoardController {
         }
     }
 
-    @PostMapping("/home/board/update")
+    @PostMapping("/board/update")
     public String updateBoard(HttpSession session, BoardDto boardDto, Model model) {
         boardDto.setUserId(session.getAttribute("userId").toString());
         if (this.boardService.update(boardDto)) {
