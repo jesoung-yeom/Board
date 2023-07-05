@@ -25,7 +25,7 @@ public class LoginController {
     @PostMapping("/signin")
     public String signIn(AccountDto accountDto, Model model, HttpSession session) {
         if (loginService.signIn(accountDto)) {
-            session.setAttribute("userId", accountDto.getUserId());
+            session.setAttribute("user-email", accountDto.getUserEmail());
 
             return "redirect:/home";
         } else {

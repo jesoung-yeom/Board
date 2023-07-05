@@ -38,11 +38,11 @@
             </thead>
             <tbody>
             <tr th:each="commentList : ${commentDtoList}">
-                <td th:text="${commentList.getUserId()}"></td>
+                <td th:text="${commentList.getUserEmail()}"></td>
                 <td>
                     <form th:action="@{/home/board/comment/update}" th:method="post">
                         <input name="id" type="hidden" th:value="${commentList.getId()}"></input>
-                        <input name="userId" type="hidden" th:value="${commentList.getUserId()}"></input>
+                        <input name="userEmail" type="hidden" th:value="${commentList.getUserEmail()}"></input>
                         <input name="boardId" type="hidden" th:value="${commentList.getBoardId()}"></input>
                         <input name="createdAt" type="hidden" th:value="${commentList.getCreatedAt()}"></input>
                         <label th:id="'commentLabel' + ${commentList.getId()}"

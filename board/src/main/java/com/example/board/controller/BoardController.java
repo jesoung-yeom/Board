@@ -50,8 +50,8 @@ public class BoardController {
 
     @PostMapping("/board/create")
     public String createBoard(HttpSession session, BoardDto boardDto) {
-        boardDto.setUserId(session.getAttribute("userId").toString());
         this.boardService.create(boardDto);
+        boardDto.setUserEmail(session.getAttribute("user-email").toString());
 
         return "redirect:/home";
     }
@@ -85,7 +85,7 @@ public class BoardController {
 
     @PostMapping("/board/update")
     public String updateBoard(HttpSession session, BoardDto boardDto, Model model) {
-        boardDto.setUserId(session.getAttribute("userId").toString());
+        boardDto.setUserEmail(session.getAttribute("user-email").toString());
         if (this.boardService.update(boardDto)) {
 
             return "redirect:/home";

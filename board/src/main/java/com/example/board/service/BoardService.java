@@ -24,7 +24,7 @@ public class BoardService {
                 .id(board.getId())
                 .title(board.getTitle())
                 .content(board.getContent())
-                .userId(board.getUserId())
+                .userEmail(board.getUserEmail())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
                 .build();
@@ -42,7 +42,7 @@ public class BoardService {
                     .content(boardList.get(i).getContent())
                     .createdAt(boardList.get(i).getCreatedAt())
                     .updatedAt(boardList.get(i).getUpdatedAt())
-                    .userId(boardList.get(i).getUserId())
+                    .userEmail(boardList.get(i).getUserEmail())
                     .build();
             boardDtoList.add(boardListDto);
         }
@@ -55,7 +55,7 @@ public class BoardService {
         board.setTitle(boardDto.getTitle())
                 .setContent(boardDto.getContent())
                 .setCreatedAt(Date.valueOf(LocalDate.now()))
-                .setUserId(boardDto.getUserId());
+                .setUserEmail(boardDto.getUserEmail());
 
         return this.boardRepository.save(board);
     }
@@ -78,7 +78,7 @@ public class BoardService {
                 .setContent(boardDto.getContent())
                 .setCreatedAt(this.boardRepository.findById(board.getId()).get().getCreatedAt())
                 .setUpdatedAt(Date.valueOf(LocalDate.now()))
-                .setUserId(boardDto.getUserId());
+                .setUserEmail(boardDto.getUserEmail());
 
         try {
             this.boardRepository.save(board);
