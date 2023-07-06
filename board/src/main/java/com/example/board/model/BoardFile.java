@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -36,6 +37,6 @@ public class BoardFile {
     private String fileExtension;
 
     @Column(name = "uploaded_at")
-    private Date uploadedAt;
+    private LocalDateTime uploadedAt;
 
 }

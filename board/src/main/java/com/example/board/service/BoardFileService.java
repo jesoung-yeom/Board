@@ -104,7 +104,7 @@ public class BoardFileService {
                         .setFileSize((long) imageBytes.length)
                         .setFilePath(filePath)
                         .setFileExtension(fileExtension)
-                        .setUploadedAt(Date.valueOf(LocalDate.now()));
+                        .setUploadedAt(LocalDateTime.now());
                 boarFileList.add(boardFile);
                 bis.close();
             } catch (IOException e) {

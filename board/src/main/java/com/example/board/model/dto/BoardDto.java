@@ -20,8 +20,8 @@ public class BoardDto {
 
     private String content;
 
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
 }

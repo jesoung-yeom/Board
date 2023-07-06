@@ -58,7 +58,7 @@
                     </form>
                 </td>
                 <td th:text="${commentList.getUserId()}"></td>
-                <td th:text="${commentList.getUpdatedAt() != null ? commentList.getUpdatedAt() : commentList.getCreatedAt()}"></td>
+                <td th:text="${#temporals.format(commentList.getUpdatedAt, 'yyyy-MM-dd HH:mm') != null ? #temporals.format(commentList.getUpdatedAt, 'yyyy-MM-dd HH:mm') : #temporals.format(commentList.getCreatedAt, 'yyyy-MM-dd HH:mm')}"></td>
                 <td>
                     <form th:id="'delete-button'+${commentList.getId()}" th:action="@{/home/board/comment/delete}"
                           th:method="post">

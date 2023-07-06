@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -19,7 +20,7 @@ public class CommentDto {
 
     private String contentOfComment;
 
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 }

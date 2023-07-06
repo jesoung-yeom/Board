@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class CommentService {
         comment.setBoardId(commentDto.getBoardId())
                 .setUserId(commentDto.getUserId())
                 .setContentOfComment(commentDto.getContentOfComment())
-                .setCreatedAt(Date.valueOf(LocalDate.now()));
+                .setCreatedAt(LocalDateTime.now());
 
         return this.commentRepository.save(comment);
     }
@@ -45,7 +46,7 @@ public class CommentService {
                 .setUserId(commentDto.getUserId())
                 .setContentOfComment(commentDto.getContentOfComment())
                 .setCreatedAt(commentDto.getCreatedAt())
-                .setUpdatedAt(Date.valueOf(LocalDate.now()));
+                .setUpdatedAt(LocalDateTime.now());
         try {
             this.commentRepository.save(comment);
 

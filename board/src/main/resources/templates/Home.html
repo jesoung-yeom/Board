@@ -38,7 +38,7 @@
                     </form>
                 </td>
                 <td th:text="${boardDto.getUserId()}"></td>
-                <td th:text="${boardDto.getUpdatedAt != null ? boardDto.getUpdatedAt() : boardDto.getCreatedAt()}"></td>
+                <td th:text="${#temporals.format(boardDto.getUpdatedAt, 'yyyy-MM-dd HH:mm') != null ? #temporals.format(boardDto.getUpdatedAt, 'yyyy-MM-dd HH:mm') : #temporals.format(boardDto.getCreatedAt, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
             </tbody>
         </table>

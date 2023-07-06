@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class BoardService {
         Board board = new Board();
         board.setTitle(boardDto.getTitle())
                 .setContent(extractContent(boardDto.getContent()))
-                .setCreatedAt(Date.valueOf(LocalDate.now()))
+                .setCreatedAt(LocalDateTime.now())
                 .setUserId(boardDto.getUserId());
 
         return this.boardRepository.save(board);
@@ -101,7 +102,7 @@ public class BoardService {
                 .setTitle(boardDto.getTitle())
                 .setContent(extractContent(boardDto.getContent()))
                 .setCreatedAt(this.boardRepository.findById(board.getId()).get().getCreatedAt())
-                .setUpdatedAt(Date.valueOf(LocalDate.now()))
+                .setUpdatedAt(LocalDateTime.now())
                 .setUserId(boardDto.getUserId());
 
         try {
