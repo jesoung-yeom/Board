@@ -37,6 +37,21 @@ public class BoardFileService {
         }
     }
 
+    public boolean update(BoardDto boardDto) {
+        ArrayList<BoardFile> boardFileList = convertToBoardFile(boardDto);
+        if(!boardFileList.isEmpty()) {
+            this.boardFileRepository.deleteAllByBoardId(boardDto.getId());
+            System.out.println(boardFileList.get(0).getFileName());
+            this.boardFileRepository.saveAll(boardFileList);
+
+            return true;
+        } else {
+            this.boardFileRepository.deleteAllByBoardId(boardDto.getId());
+
+            return true;
+        }
+    }
+
     public boolean delete(BoardDto boardDto) {
         this.boardFileRepository.deleteAllByBoardId(boardDto.getId());
 

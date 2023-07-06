@@ -35,6 +35,16 @@ public class BoardService {
         return boardDto;
     }
 
+    public String extractContent(String content) {
+        Document doc = Jsoup.parse(content);
+        Elements images = doc.select("img");
+        for (int i = 0; i < images.size(); i++) {
+            images.get(i).attr("src", "[image-" + i + "]");
+        }
+        //여기에 요청문의 내용
+        return doc.toString();
+    }
+
     public String combineContent(String content, ArrayList<String> convertList) {
         Document doc = Jsoup.parse(content);
         Elements images = doc.select("img");
@@ -42,7 +52,7 @@ public class BoardService {
             images.get(i).attr("src", convertList.get(i).toString());
         }
 
-        return images.toString();
+        return doc.toString();
     }
 
 
@@ -74,17 +84,6 @@ public class BoardService {
         return this.boardRepository.save(board);
     }
 
-    public boolean delete(Long id) {
-    public String extractContent(String content) {
-        Document doc = Jsoup.parse(content);
-        Elements images = doc.select("img");
-        images.empty();
-        for (int i = 0; i < images.size(); i++) {
-            images.get(i).after("[image-" + i + "]");
-            images.get(i).remove();
-        }
-        return doc.toString();
-    }
     public boolean delete(BoardDto boardDto) {
         try {
             this.boardRepository.deleteById(boardDto.getId());
@@ -100,7 +99,7 @@ public class BoardService {
         Board board = new Board();
         board.setId(boardDto.getId())
                 .setTitle(boardDto.getTitle())
-                .setContent(boardDto.getContent())
+                .setContent(extractContent(boardDto.getContent()))
                 .setCreatedAt(this.boardRepository.findById(board.getId()).get().getCreatedAt())
                 .setUpdatedAt(Date.valueOf(LocalDate.now()))
                 .setUserEmail(boardDto.getUserEmail());

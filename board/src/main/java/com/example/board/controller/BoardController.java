@@ -89,7 +89,7 @@ public class BoardController {
     public String updateBoard(HttpSession session, BoardDto boardDto, Model model) {
         boardDto.setUserEmail(session.getAttribute("user-email").toString());
         if (this.boardService.update(boardDto)) {
-
+            this.boardFileService.update(boardDto);
             return "redirect:/home";
         } else {
             model.addAttribute("message", "수정오류");
