@@ -20,9 +20,6 @@ public class BoardFile {
     @Column(name = "board_info_id")
     private Long boardId;
 
-    @Column(name ="board_comment_id")
-    private Long commentId;
-
     @Column(name = "name")
     private String fileName;
 
