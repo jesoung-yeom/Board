@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("home/board/comment")
 public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/home/board/comment/create")
+    @PostMapping("/create")
     public String createComment(HttpSession session, CommentDto commentDto, Model model) {
         commentDto.setUserId(session.getAttribute("user-id").toString());
         this.commentService.create(commentDto);
@@ -30,7 +31,7 @@ public class CommentController {
 
     }
 
-    @PostMapping("/home/board/comment/delete")
+    @PostMapping("/delete")
     public String deleteComment(CommentDto commentDto, Model model) {
         if (this.commentService.delete(commentDto.getId())) {
 
@@ -43,7 +44,7 @@ public class CommentController {
         }
     }
 
-    @PostMapping("/home/board/comment/update")
+    @PostMapping("/update")
     public String updateComment(CommentDto commentDto, Model model) {
 
         if (this.commentService.update(commentDto)) {
