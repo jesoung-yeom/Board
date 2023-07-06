@@ -32,13 +32,12 @@
         <hr/>
         <table>
             <thead>
-            <tr>작성자</tr>
             <tr>내용</tr>
+            <tr>작성자</tr>
             <tr>날짜</tr>
             </thead>
             <tbody>
             <tr th:each="commentList : ${commentDtoList}">
-                <td th:text="${commentList.getUserEmail()}"></td>
                 <td>
                     <form th:action="@{/home/board/comment/update}" th:method="post">
                         <input name="id" type="hidden" th:value="${commentList.getId()}"></input>
@@ -57,6 +56,7 @@
                         </button>
                     </form>
                 </td>
+                <td th:text="${commentList.getUserId()}"></td>
                 <td th:text="${commentList.getUpdatedAt() != null ? commentList.getUpdatedAt() : commentList.getCreatedAt()}"></td>
 
                 <td>

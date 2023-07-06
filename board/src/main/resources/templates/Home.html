@@ -24,20 +24,20 @@
         <table class="table">
             <thead>
             <tr>
-                <th>아이디</th>
                 <th>제목</th>
+                <th>작성자</th>
                 <th>날짜</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="boardDto : ${boardDtoList}">
-                <td th:text="${boardDto.getUserEmail()}"></td>
                 <td>
                     <form th:action="@{/home/board}" method="get">
                         <input name="id" type="hidden" th:value="${boardDto.getId()}">
                         <button type="submit" class="btn btn-link" th:utext="${boardDto.getTitle()}"></button>
                     </form>
                 </td>
+                <td th:text="${boardDto.getUserId()}"></td>
                 <td th:text="${boardDto.getUpdatedAt != null ? boardDto.getUpdatedAt() : boardDto.getCreatedAt()}"></td>
             </tr>
             </tbody>
