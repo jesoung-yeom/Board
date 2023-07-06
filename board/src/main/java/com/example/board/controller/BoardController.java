@@ -29,7 +29,7 @@ public class BoardController {
 
     @GetMapping("/board")
     public String showBoard(BoardDto boardDto, Model model) {
-        model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
+        model.addAttribute("boardDto", this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto)));
         model.addAttribute("commentDtoList", this.commentService.findByBoardId(boardDto.getId()));
 
         if (boardDto.getId() != null) {
@@ -73,7 +73,7 @@ public class BoardController {
 
     @GetMapping("/board/update")
     public String showUpdateBoard(BoardDto boardDto, Model model) {
-        model.addAttribute("boardDto", this.boardService.findById(boardDto.getId()));
+        model.addAttribute("boardDto", this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto)));
         if (boardDto.getId() != null) {
 
             return "board-update";

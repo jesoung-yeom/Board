@@ -36,14 +36,13 @@ public class BoardService {
     }
 
     public String combineContent(String content, ArrayList<String> convertList) {
-        String result = content;
-        for (int i = 0; i < convertList.size(); i++) {
-            String target = "[image-" + i + "]";
-            String replace = convertList.get(i);
-            result = result.replace(target, replace);
+        Document doc = Jsoup.parse(content);
+        Elements images = doc.select("img");
+        for (int i = 0; i < images.size(); i++) {
+            images.get(i).attr("src", convertList.get(i).toString());
         }
 
-        return result;
+        return images.toString();
     }
 
 
