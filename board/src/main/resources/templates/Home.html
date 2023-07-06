@@ -34,7 +34,7 @@
                 <td>
                     <form th:action="@{/home/board}" method="get">
                         <input name="id" type="hidden" th:value="${boardDto.getId()}">
-                        <button type="submit" class="btn btn-link" th:utext="${boardDto.getTitle()}"></button>
+                        <button type="submit" class="btn btn-link" th:text="${boardDto.getTitle()}"></button>
                     </form>
                 </td>
                 <td th:text="${boardDto.getUserId()}"></td>

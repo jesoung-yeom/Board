@@ -14,9 +14,9 @@
 <main>
     <div>
         <input id="board-id" name="id" type="hidden" th:value="${boardDto.getId()}">
-        <textarea id="title-editor" name="title" th:utext="${boardDto.getTitle()}"></textarea>
+        <textarea id="title-editor" name="title" th:text="${boardDto.getTitle()}"></textarea>
         <hr/>
-        <textarea id="content-editor" name="content" th:utext="${boardDto.getContent()}" }></textarea>
+        <textarea id="content-editor" name="content" th:utext="${boardDto.getContent()}"}></textarea>
         <hr/>
         <button onclick="submitForm()">완료</button>
         <form th:action="@{/home/board}" method="get">
@@ -51,18 +51,8 @@
     }
 
     $(document).ready(function () {
-        $('#title-editor').summernote({
-            lang: 'ko-KR', // 한국어로 설정
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', ['strikethrough']],
-                ['fontname'],
-                ['fontsize'],
-                ['color'],], // 툴바를 숨김
-            height: 50, // 에디터의 높이 설정
-        });
         $('#content-editor').summernote({
-            lang: 'ko-KR', // 한국어로 설정
+            lang: 'ko-KR',
             toolbar: [
                 ['style', ['bold', 'italic', 'underline']],
                 ['font', ['strikethrough']],
@@ -79,20 +69,18 @@
                         contents: '<i class="note-icon-picture"></i>',
                         tooltip: '그림 삽입',
                         click: function () {
-                            // 그림 삽입 버튼을 클릭했을 때 동작할 내용
-                            // 파일 관리기 열기 등의 기능을 구현
                         }
                     });
                     return button.render();
                 }
             },
-            height: 300 // 에디터의 높이 설정
+            height: 300
         });
         $('.dropdown-toggle').dropdown();
     });
 
     function submitForm() {
-        const title = $('#title-editor').summernote('code');
+        const title = document.getElementById("title-editor").value;
         const content = $('#content-editor').summernote('code');
         const boardId = document.getElementById("board-id").value;
 
