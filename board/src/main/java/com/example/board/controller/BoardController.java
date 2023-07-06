@@ -46,7 +46,7 @@ public class BoardController {
 
     @GetMapping("/board/create")
     public String showWrite() {
-        return "write";
+        return "board-write";
     }
 
     @PostMapping("/board/create")
