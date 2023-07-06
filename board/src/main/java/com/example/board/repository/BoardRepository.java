@@ -19,6 +19,4 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     void deleteById(Long id);
 
-
-
 }

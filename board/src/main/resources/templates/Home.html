@@ -21,11 +21,13 @@
 <main>
     <div>
         <label style="font-size: 30px;">게시판</label>
-        <table>
+        <table class="table">
             <thead>
-            <tr>이름</tr>
-            <tr>제목</tr>
-            <tr>날짜</tr>
+            <tr>
+                <th>아이디</th>
+                <th>제목</th>
+                <th>날짜</th>
+            </tr>
             </thead>
             <tbody>
             <tr th:each="boardDto : ${boardDtoList}">
@@ -40,7 +42,9 @@
             </tr>
             </tbody>
         </table>
-        <button type="button" onclick="location.href='/home/createboard'">작성</button>
+
+        <hr/>
+        <button type="button" class="btn btn-dark" onclick="location.href='/home/board/create'">작성</button>
     </div>
 </main>
 <footer>

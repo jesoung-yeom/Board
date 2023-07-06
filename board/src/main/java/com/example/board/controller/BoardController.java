@@ -19,6 +19,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
+    private final BoardFileService boardFileService;
 
     @GetMapping("")
     public String home(HttpSession session, Model model) {
