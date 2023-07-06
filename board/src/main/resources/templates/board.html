@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title text="${boardDto.getTitle()}"></title>
+
     <style>
         .hidden {
             display: none;
@@ -50,7 +51,7 @@
                         <textarea th:id="'comment-textarea'+${commentList.getId()}" name="contentOfComment"
                                   th:text="${commentList.getContentOfComment()}" class="hidden"></textarea>
                         <button th:id="'fix-button'+${commentList.getId()}" type="button"
-                                th:onclick="'convert-to-textarea(\'' + ${commentList.getId()} + '\')'">수정
+                                th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">수정
                         </button>
                         <button th:id="'complete-button'+${commentList.getId()}" class="hidden" type="submit">완료
                         </button>
@@ -58,7 +59,6 @@
                 </td>
                 <td th:text="${commentList.getUserId()}"></td>
                 <td th:text="${commentList.getUpdatedAt() != null ? commentList.getUpdatedAt() : commentList.getCreatedAt()}"></td>
-
                 <td>
                     <form th:id="'delete-button'+${commentList.getId()}" th:action="@{/home/board/comment/delete}"
                           th:method="post">
@@ -67,7 +67,7 @@
                         <button type="submit">삭제</button>
                     </form>
                     <button th:id="'cancel-button'+${commentList.getId()}" class="hidden" type="button"
-                            th:onclick="'convert-to-textarea(\'' + ${commentList.getId()} + '\')'">취소
+                            th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">취소
                     </button>
                 </td>
             </tr>
@@ -87,7 +87,6 @@
 </footer>
 </body>
 </html>
-
 <script>
     function checkCreateEmpty() {
         var content = document.getElementById("content-of-comment").value;
