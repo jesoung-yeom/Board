@@ -85,8 +85,9 @@ public class BoardService {
         }
         return doc.toString();
     }
+    public boolean delete(BoardDto boardDto) {
         try {
-            this.boardRepository.deleteById(id);
+            this.boardRepository.deleteById(boardDto.getId());
 
             return true;
         } catch (Exception e) {

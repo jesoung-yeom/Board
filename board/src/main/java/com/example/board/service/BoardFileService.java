@@ -28,7 +28,7 @@ public class BoardFileService {
     public boolean create(BoardDto boardDto) {
         ArrayList<BoardFile> boardFileList = convertToBoardFile(boardDto);
         if (!boardFileList.isEmpty()) {
-            boardFileRepository.saveAll(convertToBoardFile(boardDto));
+            this.boardFileRepository.saveAll(boardFileList);
 
             return true;
         } else {

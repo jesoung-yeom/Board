@@ -30,7 +30,6 @@ public class SignUpController {
 
             return "alert";
         }
-
     }
 }
 

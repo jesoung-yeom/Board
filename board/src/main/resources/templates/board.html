@@ -89,9 +89,9 @@
 </html>
 
 <script>
-
     function checkCreateEmpty() {
         var content = document.getElementById("contentOfComment").value;
+
         if (content !== "") {
 
             return true;
@@ -99,12 +99,11 @@
 
             return false;
         }
-
     }
 
     function checkFixConent(commentId) {
-        console.log(content.value);
         var content = document.getElementById("comment-textarea" + commentId).value;
+
         if (content !== "") {
 
             return true;

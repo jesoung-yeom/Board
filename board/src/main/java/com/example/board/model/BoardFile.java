@@ -40,4 +40,5 @@ public class BoardFile {
 
     @Column(name = "uploaded_at")
     private Date uploadedAt;
+
 }
