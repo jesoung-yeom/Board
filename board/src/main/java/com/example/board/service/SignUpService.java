@@ -14,7 +14,8 @@ public class SignUpService {
 
     public boolean signUp(AccountDto accountDto) {
         Account account = new Account();
-        account.setUserEmail(accountDto.getUserEmail())
+        account.setUserId(accountDto.getUserId())
+                .setUserEmail(accountDto.getUserEmail())
                 .setUserPw(accountDto.getUserPw())
                 .setUserName(accountDto.getUserName());
         this.accountRepository.save(account);

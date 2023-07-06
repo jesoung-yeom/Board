@@ -17,8 +17,8 @@ public class Board {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "account_email")
-    private String userEmail;
+    @Column(name = "account_id")
+    private String userId;
 
     @Column(name = "title")
     private String title;

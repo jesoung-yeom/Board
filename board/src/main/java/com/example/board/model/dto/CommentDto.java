@@ -15,7 +15,7 @@ public class CommentDto {
 
     private Long boardId;
 
-    private String userEmail;
+    private String userId;
 
     private String contentOfComment;
 

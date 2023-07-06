@@ -16,7 +16,7 @@ public class CommentController {
 
     @PostMapping("/home/board/comment/create")
     public String createComment(HttpSession session, CommentDto commentDto, Model model) {
-        commentDto.setUserEmail(session.getAttribute("user-email").toString());
+        commentDto.setUserId(session.getAttribute("user-id").toString());
         this.commentService.create(commentDto);
         if (commentDto != null) {
 

@@ -12,6 +12,9 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
+    private String userId;
+
     @Column(name = "email")
     private String userEmail;
 

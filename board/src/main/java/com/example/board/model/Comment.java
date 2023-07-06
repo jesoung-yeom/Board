@@ -21,8 +21,8 @@ public class Comment {
     @Column(name = "board_info_id")
     private Long boardId;
 
-    @Column(name = "account_email")
-    private String userEmail;
+    @Column(name = "account_id")
+    private String userId;
 
     @Column(name = "content")
     private String contentOfComment;

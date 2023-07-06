@@ -14,7 +14,7 @@ public class BoardDto {
 
     private Long id;
 
-    private String userEmail;
+    private String userId;
 
     private String title;
 

@@ -20,7 +20,7 @@ public class CommentService {
     public Comment create(CommentDto commentDto) {
         Comment comment = new Comment();
         comment.setBoardId(commentDto.getBoardId())
-                .setUserEmail(commentDto.getUserEmail())
+                .setUserId(commentDto.getUserId())
                 .setContentOfComment(commentDto.getContentOfComment())
                 .setCreatedAt(Date.valueOf(LocalDate.now()));
 
@@ -42,7 +42,7 @@ public class CommentService {
         Comment comment = new Comment();
         comment.setId(commentDto.getId())
                 .setBoardId(commentDto.getBoardId())
-                .setUserEmail(commentDto.getUserEmail())
+                .setUserId(commentDto.getUserId())
                 .setContentOfComment(commentDto.getContentOfComment())
                 .setCreatedAt(commentDto.getCreatedAt())
                 .setUpdatedAt(Date.valueOf(LocalDate.now()));
@@ -63,7 +63,7 @@ public class CommentService {
             CommentDto commentDto = CommentDto.builder()
                     .id(commentList.get(i).getId())
                     .boardId(commentList.get(i).getBoardId())
-                    .userEmail(commentList.get(i).getUserEmail())
+                    .userId(commentList.get(i).getUserId())
                     .contentOfComment(commentList.get(i).getContentOfComment())
                     .createdAt(commentList.get(i).getCreatedAt())
                     .updatedAt(commentList.get(i).getUpdatedAt())
