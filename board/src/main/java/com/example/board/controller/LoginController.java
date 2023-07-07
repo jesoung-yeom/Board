@@ -36,8 +36,10 @@ public class LoginController {
 
             return "redirect:/home";
         } else {
+            model.addAttribute("message", "아이디와 비밀번호가 일치하지 않습니다.");
+            model.addAttribute("replaceUrl", "/");
 
-            return "redirect:/";
+            return "alert";
         }
     }
 
