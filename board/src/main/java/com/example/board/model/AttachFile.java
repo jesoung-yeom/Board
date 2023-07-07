@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Table(name = "file_attachments")
 @Accessors(chain = true)
-public class BoardFile {
+public class AttachFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
