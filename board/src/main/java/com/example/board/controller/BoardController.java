@@ -1,5 +1,6 @@
 package com.example.board.controller;
 
+import com.example.board.model.dto.AttachFileDto;
 import com.example.board.model.dto.BoardDto;
 import com.example.board.service.BoardFileService;
 import com.example.board.service.BoardService;
@@ -69,10 +70,13 @@ public class BoardController {
         }
     }
 
-    @PostMapping("/board/delete")
-    public String deleteBoard(BoardDto boardDto, Model model) {
-        this.boardService.delete(boardDto);
-        if (this.boardFileService.delete(boardDto)) {
+    @PostMapping("/board/create")
+    public String createBoard(HttpSession session, BoardDto boardDto, AttachFileDto attachFileDto, Model model) {
+        boardDto.setUserId(session.getAttribute("user-id").toString());
+        boardDto.setId(this.boardService.create(boardDto).getId());
+        attachFileDto.setBoardId(boardDto.getId());
+        if (this.boardFileService.create(boardDto)) {
+            this.boardFileService.fileAttach(attachFileDto);
 
             return "redirect:/home";
         } else {

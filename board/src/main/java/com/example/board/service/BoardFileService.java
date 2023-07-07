@@ -10,10 +10,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -23,6 +28,35 @@ import java.util.List;
 public class BoardFileService {
 
     private final AttachFileRepository attachFileRepository;
+
+    public boolean fileAttach(AttachFileDto attachFileDto) {
+
+        for (int i = 0; i < attachFileDto.getAttachFiles().size(); i++) {
+            AttachFile attachFile = new AttachFile();
+            attachFile.setBoardId(attachFileDto.getBoardId())
+                    .setFileName(attachFileDto.getAttachFiles().get(i).getName())
+                    .setFileType("attach")
+                    .setFilePath(attachFileDto.getAttachFiles().get(i).getOriginalFilename())
+                    .setUploadedAt(LocalDateTime.now());
+        }
+
+        return false;
+    }
+
+    public String extractFileExtension(String target) {
+        String[] result = target.split("[.]");
+        return result[0];
+    }
+
+    public boolean saveFile(MultipartFile file) {
+        try {
+            Path filepath = Path.of("/Users/jesoung/desktop/filestorage/", file.getName());
+            Files.copy(file.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 
     public boolean create(BoardDto boardDto) {
         ArrayList<AttachFile> attachFileList = convertToBoardFile(boardDto);
