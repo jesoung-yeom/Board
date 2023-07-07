@@ -1,8 +1,9 @@
 package com.example.board.service;
 
-import com.example.board.model.BoardFile;
+import com.example.board.model.AttachFile;
+import com.example.board.model.dto.AttachFileDto;
 import com.example.board.model.dto.BoardDto;
-import com.example.board.repository.BoardFileRepository;
+import com.example.board.repository.AttachFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,12 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardFileService {
 
-    private final BoardFileRepository boardFileRepository;
+    private final AttachFileRepository attachFileRepository;
 
     public boolean create(BoardDto boardDto) {
-        ArrayList<BoardFile> boardFileList = convertToBoardFile(boardDto);
         if (!boardFileList.isEmpty()) {
-            this.boardFileRepository.saveAll(boardFileList);
+        ArrayList<AttachFile> attachFileList = convertToBoardFile(boardDto);
+                this.attachFileRepository.saveAll(attachFileList);
 
             return true;
         } else {
@@ -36,11 +37,12 @@ public class BoardFileService {
     }
 
     public boolean update(BoardDto boardDto) {
-        ArrayList<BoardFile> boardFileList = convertToBoardFile(boardDto);
         if(!boardFileList.isEmpty()) {
-            this.boardFileRepository.deleteAllByBoardId(boardDto.getId());
-            System.out.println(boardFileList.get(0).getFileName());
-            this.boardFileRepository.saveAll(boardFileList);
+        ArrayList<AttachFile> attachFileList = convertToBoardFile(boardDto);
+            this.attachFileRepository.deleteAllByBoardId(boardDto.getId());
+            if (!attachFileList.isEmpty()) {
+                this.attachFileRepository.saveAll(attachFileList);
+            }
 
             return true;
         } else {
@@ -51,22 +53,22 @@ public class BoardFileService {
     }
 
     public boolean delete(BoardDto boardDto) {
-        this.boardFileRepository.deleteAllByBoardId(boardDto.getId());
+            this.attachFileRepository.deleteAllByBoardId(boardDto.getId());
 
         return true;
     }
 
     public ArrayList<String> convertToBase64(BoardDto boardDto) {
-        List<BoardFile> boardFileList = this.boardFileRepository.findAllByBoardId(boardDto.getId());
+        List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardId(boardDto.getId());
         ArrayList<String> convertList = new ArrayList<String>();
-        for (int i = 0; i < boardFileList.size(); i++) {
+        for (int i = 0; i < attachFileList.size(); i++) {
             try {
-                File file = new File(boardFileList.get(i).getFilePath());
+                File file = new File(attachFileList.get(i).getFilePath());
                 FileInputStream fis = new FileInputStream(file);
                 byte[] imageBytes = new byte[(int) file.length()];
                 fis.read(imageBytes);
                 fis.close();
-                convertList.add("data:image/" + boardFileList.get(i).getFileExtension() + ";base64," + Base64.getEncoder().encodeToString(imageBytes));
+                convertList.add("data:image/" + attachFileList.get(i).getFileExtension() + ";base64," + Base64.getEncoder().encodeToString(imageBytes));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -75,12 +77,12 @@ public class BoardFileService {
         return convertList;
     }
 
-    public ArrayList<BoardFile> convertToBoardFile(BoardDto boardDto) {
-        ArrayList<BoardFile> boarFileList = new ArrayList<BoardFile>();
+    public ArrayList<AttachFile> convertToBoardFile(BoardDto boardDto) {
+        ArrayList<AttachFile> boarFileList = new ArrayList<AttachFile>();
         Document doc = Jsoup.parse(boardDto.getContent());
         Elements imgTags = doc.select("img");
         for (Element imgTag : imgTags) {
-            BoardFile boardFile = new BoardFile();
+            AttachFile attachFile = new AttachFile();
             String base64Data = imgTag.attr("src");
             String base64Image = base64Data.split(",")[1];
             String fileName = imgTag.attr("data-filename");
@@ -96,14 +98,14 @@ public class BoardFileService {
                 String filePath = "/Users/jesoung/desktop/filestorage/" + fileName;
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
                 ImageIO.write(bufferedImage, fileExtension, bos);
-                boardFile.setBoardId(boardDto.getId())
+                attachFile.setBoardId(boardDto.getId())
                         .setFileName(fileName)
                         .setFileType("board")
                         .setFileSize((long) imageBytes.length)
                         .setFilePath(filePath)
                         .setFileExtension(fileExtension)
                         .setUploadedAt(LocalDateTime.now());
-                boarFileList.add(boardFile);
+                boarFileList.add(attachFile);
                 bis.close();
             } catch (IOException e) {
                 // 예외 처리
