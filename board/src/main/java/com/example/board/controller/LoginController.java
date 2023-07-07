@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Optional;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -19,6 +21,10 @@ public class LoginController {
 
     @GetMapping("/")
     public String showLogin(HttpSession session) {
+        Optional<Object> checkAccount = Optional.ofNullable(session.getAttribute("user-id"));
+        if (checkAccount.isPresent()) {
+            return "redirect:/home";
+        }
         return "login";
     }
 
@@ -32,6 +38,12 @@ public class LoginController {
 
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/signout")
+    public String signOut(HttpSession session) {
+        session.removeAttribute("user-id");
+        return "redirect:/";
     }
 
 }

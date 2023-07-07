@@ -21,87 +21,28 @@
             <label>작성</label>
         </div>
         <hr/>
-
-        <div>
-            <label>제목</label>
-            <textarea id="title-writer" name="title"></textarea>
-        </div>
-        <div>
-            <label>내용</label>
-            <textarea id="content-writer" name="content"></textarea>
-        </div>
-        <hr/>
-        <button onclick="submitForm()">작성</button>
+        <form th:action="@{/home/board/create}" onsubmit="return checkWrite();" method="post" enctype="multipart/form-data">
+            <div>
+                <label>제목</label>
+                <textarea id="title-writer" name="title"></textarea>
+            </div>
+            <div>
+                <label>내용</label>
+                <textarea id="content-writer" name="content"></textarea>
+            </div>
+            <hr/>
+            <label> Attach File </label>
+            <input type="file" id="attach-file" name="attachFiles" multiple>
+            <ul id="attach-file-list"></ul>
+            <hr/>
+            <button type="submit">작성</button>
+            <button type="button" onclick="location.href='/home'">취소</button>
+        </form>
     </div>
 </main>
 <footer>
 
 </footer>
+<script src="/js/board-write.js"></script>
 </body>
 </html>
-<script>
-    function checkEmpty() {
-        var title = document.getElementById("title").value;
-        var content = document.getElementById("content").value;
-
-        if (title !== "" && content !== "") {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    $(document).ready(function () {
-        $('#content-writer').summernote({
-            lang: 'ko-KR',
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', ['strikethrough']],
-                ['fontname'],
-                ['fontsize'],
-                ['color'],
-                ['para', ['ul', 'ol']],
-                ['insert', ['picture']],
-            ],
-            buttons: {
-                picture: function (context) {
-                    var ui = $.summernote.ui;
-                    var button = ui.button({
-                        contents: '<i class="note-icon-picture"></i>',
-                        tooltip: '그림 삽입',
-                        click: function () {
-                        }
-                    });
-                    return button.render();
-                }
-            },
-        });
-        $('.dropdown-toggle').dropdown();
-
-    });
-
-    function submitForm() {
-        const title = document.getElementById("title-writer").value;
-        const content = $('#content-writer').summernote('code');
-
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("content", content);
-
-        $.ajax({
-            url: "/home/board/create",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            enctype: 'multipart/form-data',
-            success: function (response) {
-                alert("글 작성이 완료되었습니다.");
-                window.location.href = "/home";
-            },
-            error: function (xhr, status, error) {
-                alert("글 작성에 실패했습니다. 다시 시도해주세요.");
-            }
-        });
-    }
-</script>

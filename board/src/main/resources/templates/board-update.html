@@ -17,12 +17,14 @@
 </header>
 <main>
     <div>
-        <input id="board-id" name="id" type="hidden" th:value="${boardDto.getId()}">
-        <textarea id="title-editor" name="title" th:text="${boardDto.getTitle()}"></textarea>
-        <hr/>
-        <textarea id="content-editor" name="content" th:utext="${boardDto.getContent()}"}></textarea>
-        <hr/>
-        <button onclick="submitForm()">완료</button>
+        <form th:action="@{/home/board/update}" onsubmit="return checkEdit();" method="post">
+            <input id="board-id" name="id" type="hidden" th:value="${boardDto.getId()}">
+            <textarea id="title-editor" name="title" th:text="${boardDto.getTitle()}"></textarea>
+            <hr/>
+            <textarea id="content-editor" name="content" th:utext="${boardDto.getContent()}" }></textarea>
+            <hr/>
+            <button onclick="submitForm()">완료</button>
+        </form>
         <form th:action="@{/home/board}" method="get">
             <input name="id" type="hidden" th:value="${boardDto.getId()}">
             <button type="submit">취소</button>
@@ -33,75 +35,6 @@
 <footer>
 
 </footer>
+<script src="/js/board-update.js"></script>
 </body>
 </html>
-<script>
-    function checkEmpty() {
-        var title = document.getElementById("title").value;
-        var content = document.getElementById("content").value;
-
-        if (title !== "" && content !== "") {
-
-            return true;
-        } else {
-
-            return false;
-        }
-    }
-
-    $(document).ready(function () {
-        $('#content-editor').summernote({
-            lang: 'ko-KR',
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', ['strikethrough']],
-                ['fontname'],
-                ['fontsize'],
-                ['color'],
-                ['para', ['ul', 'ol']],
-                ['insert', ['picture']],
-            ],
-            buttons: {
-                picture: function (context) {
-                    var ui = $.summernote.ui;
-                    var button = ui.button({
-                        contents: '<i class="note-icon-picture"></i>',
-                        tooltip: '그림 삽입',
-                        click: function () {
-                        }
-                    });
-                    return button.render();
-                }
-            },
-            height: 300
-        });
-        $('.dropdown-toggle').dropdown();
-    });
-
-    function submitForm() {
-        const title = document.getElementById("title-editor").value;
-        const content = $('#content-editor').summernote('code');
-        const boardId = document.getElementById("board-id").value;
-
-        const formData = new FormData();
-        formData.append("id", boardId);
-        formData.append("title", title);
-        formData.append("content", content);
-
-        $.ajax({
-            url: "/home/board/update",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            enctype: 'multipart/form-data',
-            success: function (response) {
-                alert("글 수정이 완료되었습니다.");
-                window.location.href = "/home/board?id=" + formData.get("id");
-            },
-            error: function (xhr, status, error) {
-                alert("글 수정에 실패했습니다. 다시 시도해주세요.");
-            }
-        });
-    }
-</script>

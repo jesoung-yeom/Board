@@ -11,7 +11,7 @@
 <main>
     <div>
         <label style="position:fixed; font-size: 30px; left:45%; top:10%;">임시 Login</label>
-        <form th:action="@{/signin} " method="post">
+        <form th:action="@{/signin}" onsubmit="return checkSignIn();" method="post">
             <div style="position:fixed; left:45%; top:20%;">
                 <div>
                     <label>아이디 : </label>
@@ -32,7 +32,7 @@
 <footer>
 
 </footer>
-
+<script src="/js/login.js"></script>
 </div>
 </body>
 </html>

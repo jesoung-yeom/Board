@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Optional;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("home")
@@ -23,9 +25,15 @@ public class BoardController {
 
     @GetMapping("")
     public String home(HttpSession session, Model model) {
-        model.addAttribute("boardDtoList", this.boardService.findAll());
+        Optional<Object> checkAccount = Optional.ofNullable(session.getAttribute("user-id"));
+        if (checkAccount != null) {
+            model.addAttribute("boardDtoList", this.boardService.findAll());
 
-        return "home";
+            return "home";
+        } else {
+
+            return "redirect:/";
+        }
     }
 
     @GetMapping("/board")
@@ -72,14 +80,19 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/board/update")
-    public String showUpdateBoard(BoardDto boardDto, Model model) {
-        model.addAttribute("boardDto", this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto)));
-        if (boardDto.getId() != null) {
+    @PostMapping("/board/delete")
+    public String deleteBoard(BoardDto boardDto, Model model) {
+        if (!this.boardService.delete(boardDto)) {
+            model.addAttribute("message", "삭제오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
+            model.addAttribute("replaceUrl", "/home");
 
-            return "board-update";
+            return "alert";
+        }
+        if (this.boardFileService.delete(boardDto)) {
+
+            return "redirect:/home";
         } else {
-            model.addAttribute("message", "조회오류");
+            model.addAttribute("message", "삭제오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
@@ -89,9 +102,15 @@ public class BoardController {
     @PostMapping("/board/update")
     public String updateBoard(HttpSession session, BoardDto boardDto, Model model) {
         boardDto.setUserId(session.getAttribute("user-id").toString());
-        if (this.boardService.update(boardDto)) {
-            this.boardFileService.update(boardDto);
-            return "redirect:/home";
+        if (!this.boardService.update(boardDto)) {
+            model.addAttribute("message", "수정오류");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
+        if (this.boardFileService.update(boardDto)) {
+
+            return "redirect:/home/board?id=" + boardDto.getId();
         } else {
             model.addAttribute("message", "수정오류");
             model.addAttribute("replaceUrl", "/home");
@@ -99,6 +118,4 @@ public class BoardController {
             return "alert";
         }
     }
-
-
 }
