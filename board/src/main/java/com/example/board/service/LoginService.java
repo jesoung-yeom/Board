@@ -19,5 +19,4 @@ public class LoginService {
 
         return account.isPresent();
     }
-
 }

@@ -9,8 +9,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,6 @@ public class BoardService {
         for (int i = 0; i < images.size(); i++) {
             images.get(i).attr("src", "[image-" + i + "]");
         }
-        //여기에 요청문의 내용
         return doc.toString();
     }
 

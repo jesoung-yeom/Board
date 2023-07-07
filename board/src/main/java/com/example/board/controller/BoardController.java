@@ -18,7 +18,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("home")
 public class BoardController {
-
     private final BoardService boardService;
     private final CommentService commentService;
     private final BoardFileService boardFileService;
