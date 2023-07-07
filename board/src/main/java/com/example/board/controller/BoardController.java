@@ -37,14 +37,13 @@ public class BoardController {
 
     @GetMapping("/board")
     public String showBoard(BoardDto boardDto, Model model) {
-        model.addAttribute("boardDto", this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto)));
-        model.addAttribute("commentDtoList", this.commentService.findByBoardId(boardDto.getId()));
-
-        if (boardDto.getId() != null) {
+        try {
+            model.addAttribute("boardDto", this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto)));
+            model.addAttribute("commentDtoList", this.commentService.findByBoardId(boardDto.getId()));
 
             return "board";
-        } else {
-            model.addAttribute("message", "조회오류");
+        } catch (Exception e) {
+            model.addAttribute("message", "조회오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
@@ -56,13 +55,18 @@ public class BoardController {
         return "board-write";
     }
 
-    @PostMapping("/board/create")
-    public String createBoard(HttpSession session, BoardDto boardDto) {
-        boardDto.setUserId(session.getAttribute("user-id").toString());
-        boardDto.setId(this.boardService.create(boardDto).getId());
-        this.boardFileService.create(boardDto);
+    @GetMapping("/board/update")
+    public String showUpdateBoard(BoardDto boardDto, Model model) {
 
-        return "redirect:/home";
+        try {
+            model.addAttribute("boardDto", this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto)));
+            return "board-update";
+        } catch (Exception e) {
+            model.addAttribute("message", "오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
     }
 
     @PostMapping("/board/delete")
@@ -72,7 +76,7 @@ public class BoardController {
 
             return "redirect:/home";
         } else {
-            model.addAttribute("message", "삭제오류");
+            model.addAttribute("message", "저장오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";

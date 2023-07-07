@@ -25,37 +25,45 @@ public class BoardFileService {
     private final AttachFileRepository attachFileRepository;
 
     public boolean create(BoardDto boardDto) {
-        if (!boardFileList.isEmpty()) {
         ArrayList<AttachFile> attachFileList = convertToBoardFile(boardDto);
+        try {
+            if (!attachFileList.isEmpty()) {
                 this.attachFileRepository.saveAll(attachFileList);
 
-            return true;
-        } else {
+                return true;
+            }
+        } catch (Exception e) {
 
             return false;
         }
+
+        return true;
     }
 
     public boolean update(BoardDto boardDto) {
-        if(!boardFileList.isEmpty()) {
         ArrayList<AttachFile> attachFileList = convertToBoardFile(boardDto);
+        try {
             this.attachFileRepository.deleteAllByBoardId(boardDto.getId());
             if (!attachFileList.isEmpty()) {
                 this.attachFileRepository.saveAll(attachFileList);
             }
 
             return true;
-        } else {
-            this.boardFileRepository.deleteAllByBoardId(boardDto.getId());
+        } catch (Exception e) {
 
-            return true;
+            return false;
         }
     }
 
     public boolean delete(BoardDto boardDto) {
+        try {
             this.attachFileRepository.deleteAllByBoardId(boardDto.getId());
 
-        return true;
+            return true;
+        } catch (Exception e) {
+
+            return false;
+        }
     }
 
     public ArrayList<String> convertToBase64(BoardDto boardDto) {
@@ -70,7 +78,7 @@ public class BoardFileService {
                 fis.close();
                 convertList.add("data:image/" + attachFileList.get(i).getFileExtension() + ";base64," + Base64.getEncoder().encodeToString(imageBytes));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return null;
             }
         }
 
@@ -108,7 +116,7 @@ public class BoardFileService {
                 boarFileList.add(attachFile);
                 bis.close();
             } catch (IOException e) {
-                // 예외 처리
+                return null;
             }
         }
 

@@ -17,18 +17,16 @@ public class CommentController {
 
     @PostMapping("/create")
     public String createComment(HttpSession session, CommentDto commentDto, Model model) {
-        commentDto.setUserId(session.getAttribute("user-id").toString());
-        this.commentService.create(commentDto);
-        if (commentDto != null) {
-
+        try {
+            commentDto.setUserId(session.getAttribute("user-id").toString());
+            this.commentService.create(commentDto);
             return "redirect:/home/board?id=" + commentDto.getBoardId();
-        } else {
+        } catch (Exception e) {
             model.addAttribute("message", "생성오류");
             model.addAttribute("replaceUrl", "/home/board?id=" + commentDto.getBoardId());
 
             return "alert";
         }
-
     }
 
     @PostMapping("/delete")

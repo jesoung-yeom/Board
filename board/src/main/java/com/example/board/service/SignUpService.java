@@ -18,10 +18,13 @@ public class SignUpService {
                 .setUserEmail(accountDto.getUserEmail())
                 .setUserPw(accountDto.getUserPw())
                 .setUserName(accountDto.getUserName());
-        this.accountRepository.save(account);
+        if (this.accountRepository.findByUserId(accountDto.getUserId()) == null) {
+            this.accountRepository.save(account);
 
-        return true;
+            return true;
+        } else {
+
+            return false;
+        }
     }
-
-
 }
