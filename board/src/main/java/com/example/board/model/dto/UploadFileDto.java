@@ -6,9 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @Data
-public class AttachFileDto {
+public class UploadFileDto {
 
     private Long boardId;
 
-    private List<MultipartFile> attachFiles;
+    private List<MultipartFile> attachFileList;
+
 }

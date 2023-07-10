@@ -109,12 +109,12 @@ public class BoardController {
     }
 
     @PostMapping("/board/create")
-    public String createBoard(HttpSession session, BoardDto boardDto, AttachFileDto attachFileDto, Model model) {
+    public String createBoard(HttpSession session, BoardDto boardDto, UploadFileDto uploadFileDto, Model model) {
         boardDto.setUserId(session.getAttribute("user-id").toString());
         boardDto.setId(this.boardService.create(boardDto).getId());
-        attachFileDto.setBoardId(boardDto.getId());
+        uploadFileDto.setBoardId(boardDto.getId());
         if (this.boardFileService.create(boardDto)) {
-            this.boardFileService.fileAttach(attachFileDto);
+            this.boardFileService.fileAttach(uploadFileDto);
 
             return "redirect:/home";
         } else {
