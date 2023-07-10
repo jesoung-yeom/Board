@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -70,6 +72,20 @@ public class BoardService {
         }
 
         return boardDtoList;
+    }
+
+    public Page<BoardDto> findAll(Pageable pageable) {
+        Page<Board> boardPage = this.boardRepository.findAll(pageable);
+        Page<BoardDto> boardPageDto = boardPage.map(m -> BoardDto.builder()
+                .id(m.getId())
+                .title(m.getTitle())
+                .content(m.getContent())
+                .userId(m.getUserId())
+                .createdAt(m.getCreatedAt())
+                .updatedAt(m.getUpdatedAt())
+                .build());
+
+        return boardPageDto;
     }
 
     public Board create(BoardDto boardDto) {

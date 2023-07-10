@@ -1,6 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.model.dto.AttachFileDto;
+import com.example.board.global.PageNationEnum;
 import com.example.board.model.dto.BoardDto;
 import com.example.board.model.dto.DownloadFileDto;
 import com.example.board.model.dto.PreviewAttachFileDto;
@@ -8,8 +8,12 @@ import com.example.board.model.dto.UploadFileDto;
 import com.example.board.service.BoardFileService;
 import com.example.board.service.BoardService;
 import com.example.board.service.CommentService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,10 +35,17 @@ public class BoardController {
     private final BoardFileService boardFileService;
 
     @GetMapping("")
-    public String home(HttpSession session, Model model) {
+    public String home(@RequestParam(defaultValue = "0") int page, HttpSession session, Model model) {
         Optional<Object> checkAccount = Optional.ofNullable(session.getAttribute("user-id"));
+        Pageable pageable = PageRequest.of(page, PageNationEnum.EPage.page.getPageSize());
+        Page<BoardDto> boardDtoList = this.boardService.findAll(pageable);
+        model.addAttribute("boardDtoList", boardDtoList.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", boardDtoList.getTotalPages());
+
+
         if (checkAccount != null) {
-            model.addAttribute("boardDtoList", this.boardService.findAll());
+            //model.addAttribute("boardDtoList", this.boardService.findAll());
 
             return "home";
         } else {
