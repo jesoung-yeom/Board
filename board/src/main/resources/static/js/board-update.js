@@ -27,10 +27,28 @@ $(document).ready(function () {
                 return button.render();
             }
         },
+        height:300,
     });
     $('.dropdown-toggle').dropdown();
 
 });
+function handleFileSelect(event) {
+    const fileList = event.target.files;
+
+    const listContainer = document.getElementById("attach-file-list");
+
+    listContainer.innerHTML = "";
+
+    for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+        const listItem = document.createElement("li");
+        listItem.textContent = file.name;
+
+        listContainer.appendChild(listItem);
+    }
+}
+const fileInput = document.getElementById("attach-file");
+fileInput.addEventListener("change", handleFileSelect);
 
 function checkEdit() {
     const title = document.getElementById("title-editor").value;
@@ -50,3 +68,4 @@ function checkEdit() {
         return true;
     }
 }
+

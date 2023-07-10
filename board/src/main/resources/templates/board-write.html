@@ -19,6 +19,9 @@
     <div>
         <div>
             <label>작성</label>
+                    <label class="form-label h4 fw-bold"> Attach File </label>
+                    <input type="file" id="attach-file" name="attachFileList" multiple>
+                    <ul id="attach-file-list"></ul>
         </div>
         <hr/>
         <form th:action="@{/home/board/create}" onsubmit="return checkWrite();" method="post" enctype="multipart/form-data">
@@ -30,10 +33,6 @@
                 <label>내용</label>
                 <textarea id="content-writer" name="content"></textarea>
             </div>
-            <hr/>
-            <label> Attach File </label>
-            <input type="file" id="attach-file" name="attachFiles" multiple>
-            <ul id="attach-file-list"></ul>
             <hr/>
             <button type="submit">작성</button>
             <button type="button" onclick="location.href='/home'">취소</button>

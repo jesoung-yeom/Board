@@ -1,10 +1,13 @@
 package com.example.board.service;
 
 import com.example.board.model.AttachFile;
-import com.example.board.model.dto.AttachFileDto;
 import com.example.board.model.dto.BoardDto;
+import com.example.board.model.dto.DownloadFileDto;
+import com.example.board.model.dto.PreviewAttachFileDto;
+import com.example.board.model.dto.UploadFileDto;
 import com.example.board.repository.AttachFileRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,40 +25,81 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+
 public class BoardFileService {
 
     private final AttachFileRepository attachFileRepository;
 
-    public boolean fileAttach(AttachFileDto attachFileDto) {
+    private String filePath;
 
-        for (int i = 0; i < attachFileDto.getAttachFiles().size(); i++) {
-            AttachFile attachFile = new AttachFile();
-            attachFile.setBoardId(attachFileDto.getBoardId())
-                    .setFileName(attachFileDto.getAttachFiles().get(i).getName())
-                    .setFileType("attach")
-                    .setFilePath(attachFileDto.getAttachFiles().get(i).getOriginalFilename())
-                    .setUploadedAt(LocalDateTime.now());
+    public boolean fileAttach(UploadFileDto uploadFileDto) {
+        if (uploadFileDto.getAttachFileList().get(0).equals("")) {
+            List<AttachFile> fileList = new ArrayList<AttachFile>();
+            for (int i = 0; i < uploadFileDto.getAttachFileList().size(); i++) {
+                AttachFile attachFile = new AttachFile();
+                attachFile.setBoardId(uploadFileDto.getBoardId())
+                        .setFileName(uploadFileDto.getAttachFileList().get(i).getOriginalFilename())
+                        .setFileType("attach")
+                        .setFileSize(uploadFileDto.getAttachFileList().get(i).getSize())
+                        .setFilePath(saveFile(uploadFileDto.getAttachFileList().get(i)))
+                        .setFileExtension(extractFileExtension(uploadFileDto.getAttachFileList().get(i).getOriginalFilename()))
+                        .setUploadedAt(LocalDateTime.now());
+                fileList.add(attachFile);
+            }
+            this.attachFileRepository.saveAll(fileList);
+            //예외처리
         }
+        return true;
+    }
 
-        return false;
+    public List<PreviewAttachFileDto> getPreviewAttachFileList(BoardDto boardDto) {
+        List<AttachFile> attachList = this.attachFileRepository.findAllByBoardIdAndFileType(boardDto.getId(), "attach");
+        List<PreviewAttachFileDto> previewList = new ArrayList<>();
+        for (int i = 0; i < attachList.size(); i++) {
+            PreviewAttachFileDto previewAttachFileDto = PreviewAttachFileDto.builder()
+                    .attachFileId(attachList.get(i).getId())
+                    .boardId(attachList.get(i).getBoardId())
+                    .fileName(attachList.get(i).getFileName())
+                    .build();
+            previewList.add(previewAttachFileDto);
+        }
+        return previewList;
     }
 
     public String extractFileExtension(String target) {
         String[] result = target.split("[.]");
-        return result[0];
+        return result[result.length - 1];
     }
 
-    public boolean saveFile(MultipartFile file) {
+    public String saveFile(MultipartFile file) {
+        Path filepath = Path.of("/Users/jesoung/desktop/filestorage/", file.getOriginalFilename());
         try {
-            Path filepath = Path.of("/Users/jesoung/desktop/filestorage/", file.getName());
             Files.copy(file.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            //여기도
+            return "";
+        }
+
+        return filepath.toString();
+    }
+
+    public DownloadFileDto downloadFile(PreviewAttachFileDto previewAttachFileDto) {
+        Optional<AttachFile> attachFile = Optional.ofNullable(this.attachFileRepository.findById(previewAttachFileDto.getAttachFileId()).orElse(null));
+        try {
+            DownloadFileDto downloadFileDto = DownloadFileDto.builder()
+                    .fileName(attachFile.get().getFileName())
+                    .fileSize(attachFile.get().getFileSize())
+                    .file(FileUtils.readFileToByteArray(new File(attachFile.get().getFilePath())))
+                    .build();
+
+            return downloadFileDto;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return false;
     }
 
     public boolean create(BoardDto boardDto) {
@@ -75,9 +119,11 @@ public class BoardFileService {
     }
 
     public boolean update(BoardDto boardDto) {
-        ArrayList<AttachFile> attachFileList = convertToBoardFile(boardDto);
+        List<AttachFile> attachFileList = convertToBoardFile(boardDto);
+
         try {
-            this.attachFileRepository.deleteAllByBoardId(boardDto.getId());
+
+            this.attachFileRepository.deleteAllByBoardIdAndFileType(boardDto.getId(), "board");
             if (!attachFileList.isEmpty()) {
                 this.attachFileRepository.saveAll(attachFileList);
             }
@@ -89,8 +135,48 @@ public class BoardFileService {
         }
     }
 
+    public boolean removeAllFile(BoardDto boardDto) {
+        List<AttachFile> removeList = this.attachFileRepository.findAllByBoardId(boardDto.getId());
+        for (int i = 0; i < removeList.size(); i++) {
+            File file = new File(removeList.get(i).getFilePath());
+            file.delete();
+        }
+        return true;
+    }
+
+    public boolean removeAllAttachFile(UploadFileDto uploadFileDto) {
+        List<AttachFile> removeList = this.attachFileRepository.findAllByBoardIdAndFileType(uploadFileDto.getBoardId(), "attach");
+        for (int i = 0; i < removeList.size(); i++) {
+            File file = new File(removeList.get(i).getFilePath());
+            file.delete();
+        }
+        return true;
+    }
+
+    public boolean fileUpdate(UploadFileDto uploadFileDto) {
+        this.removeAllAttachFile(uploadFileDto);
+        this.attachFileRepository.deleteAllByBoardIdAndFileType(uploadFileDto.getBoardId(), "attach");
+        List<AttachFile> fileList = new ArrayList<>();
+        if (uploadFileDto.getAttachFileList() != null) {
+            for (int i = 0; i < uploadFileDto.getAttachFileList().size(); i++) {
+                AttachFile attachFile = new AttachFile();
+                attachFile.setBoardId(uploadFileDto.getBoardId())
+                        .setFileName(uploadFileDto.getAttachFileList().get(i).getOriginalFilename())
+                        .setFileType("attach")
+                        .setFileSize(uploadFileDto.getAttachFileList().get(i).getSize())
+                        .setFilePath(saveFile(uploadFileDto.getAttachFileList().get(i)))
+                        .setFileExtension(extractFileExtension(uploadFileDto.getAttachFileList().get(i).getOriginalFilename()))
+                        .setUploadedAt(LocalDateTime.now());
+                fileList.add(attachFile);
+            }
+            this.attachFileRepository.saveAll(fileList);
+        }
+        return true;
+    }
+
     public boolean delete(BoardDto boardDto) {
         try {
+            this.removeAllFile(boardDto);
             this.attachFileRepository.deleteAllByBoardId(boardDto.getId());
 
             return true;
@@ -101,8 +187,8 @@ public class BoardFileService {
     }
 
     public ArrayList<String> convertToBase64(BoardDto boardDto) {
-        List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardId(boardDto.getId());
-        ArrayList<String> convertList = new ArrayList<String>();
+        List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileType(boardDto.getId(), "board");
+        ArrayList<String> convertList = new ArrayList<>();
         for (int i = 0; i < attachFileList.size(); i++) {
             try {
                 File file = new File(attachFileList.get(i).getFilePath());

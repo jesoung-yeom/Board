@@ -11,7 +11,13 @@ import java.util.List;
 @Transactional
 public interface AttachFileRepository extends JpaRepository<AttachFile, Long> {
 
+    AttachFile findByBoardIdAndFileName(Long id, String fileName);
+    List<AttachFile> findAllByBoardIdAndFileType(Long id, String type);
+
     List<AttachFile> findAllByBoardId(Long id);
+
     void deleteAllByBoardId(Long id);
+    
+    void deleteAllByBoardIdAndFileType(Long id,String fileType);
 
 }
