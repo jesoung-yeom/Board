@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-
-    <title text="${boardDto.getTitle()}"></title>
-    <link rel="stylesheet" href="/bootstrap-5.0.2-dist/css/bootstrap.min.css"/>
-    <script src="/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .hidden {
-            display: none;
-        }
-    </style>
-</head>
+<th:block th:replace="header :: head"></th:block>
 <body>
 <header>
 

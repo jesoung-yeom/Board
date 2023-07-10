@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${boardDto.getTitle()}"></title>
-    <link rel="stylesheet" href="/bootstrap-5.0.2-dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/summernote-0.8.18-dist/summernote-bs4.css">
-    <script src="/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-    <script src="/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/summernote-0.8.18-dist/summernote-bs4.js"></script>
-    <script src="/summernote-0.8.18-dist/lang/summernote-ko-KR.js"></script>
-
-</head>
+<th:block th:replace="header :: head"></th:block>
 <body>
 <header>
 
