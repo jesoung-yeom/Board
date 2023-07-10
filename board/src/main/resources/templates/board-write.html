@@ -2,36 +2,40 @@
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="header :: head"></th:block>
 <body>
-<header>
-
-</header>
-<main>
-    <div>
-        <div>
-            <label>작성</label>
+<main class="container-fluid ">
+    <div class="row d-flex">
+        <div class="col-12 p-3 mb-2 bg-primary text-white">
+            <label class="col-6 display-6 offset-md-1 ">작성</label>
+            <label class="col-2 text-center basic-bottom-margin offset-md-1"
+                   th:text="'환영합니다. '+${session.get('user-id')}+' 님'"></label>
+            <button class="col-1 btn btn-light basic-bottom-margin" type="button" onclick="location.href='/signout'">
+                로그아웃
+            </button>
+        </div>
+        <div class="col-10 offset-md-1">
+            <form th:action="@{/home/board/create}" onsubmit="return checkWrite();" method="post"
+                  enctype="multipart/form-data">
+                <div>
+                    <label class="form-label h4 fw-bold">제목</label>
+                    <textarea class="form-control mb-4" id="title-writer" name="title"></textarea>
+                </div>
+                <div class="summer-height">
+                    <label class="form-label h4 fw-bold">내용</label>
+                    <textarea id="content-writer" class="summer-block-size" name="content"></textarea>
+                </div>
+                <hr/>
+                <div class="row">
                     <label class="form-label h4 fw-bold"> Attach File </label>
                     <input type="file" id="attach-file" name="attachFileList" multiple>
                     <ul id="attach-file-list"></ul>
+                </div>
+                <hr/>
+                <button type="submit">작성</button>
+                <button type="button" onclick="location.href='/home'">취소</button>
+            </form>
         </div>
-        <hr/>
-        <form th:action="@{/home/board/create}" onsubmit="return checkWrite();" method="post" enctype="multipart/form-data">
-            <div>
-                <label>제목</label>
-                <textarea id="title-writer" name="title"></textarea>
-            </div>
-            <div>
-                <label>내용</label>
-                <textarea id="content-writer" name="content"></textarea>
-            </div>
-            <hr/>
-            <button type="submit">작성</button>
-            <button type="button" onclick="location.href='/home'">취소</button>
-        </form>
     </div>
 </main>
-<footer>
-
-</footer>
 <script src="/js/board-write.js"></script>
 </body>
 </html>

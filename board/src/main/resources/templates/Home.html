@@ -2,11 +2,15 @@
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
     <th:block th:replace="header :: head"></th:block>
 
-</header>
-<main>
-    <div>
-        <label style="font-size: 30px;">게시판</label>
-        <button type="button" onclick="location.href='/signout'">로그아웃</button>
+<body>
+<main class="container-fluid">
+    <div class="row d-flex">
+        <div class="col-12 p-3 mb-2 bg-primary text-white d-flex">
+            <label class="col-8 display-6 ">게시판</label>
+            <label class="col-2 text-center basic-top-margin"
+                   th:text="'환영합니다. '+${session.get('user-id')}+' 님'"></label>
+            <button class="col-1 btn btn-light" type="button" onclick="location.href='/signout'">로그아웃</button>
+        </div>
         <table class="table">
             <thead>
             <tr>
@@ -51,12 +55,10 @@
             </ul>
         </nav>
         <hr/>
-        <button type="button" class="btn btn-dark" onclick="location.href='/home/board/create'">작성</button>
+        <button type="button" class="btn btn-dark btn-lg col-md-2 offset-md-10 basic-right-margin"
+                onclick="location.href='/home/board/create'">작성
+        </button>
     </div>
 </main>
-<footer>
-
-</footer>
-
 </body>
 </html>

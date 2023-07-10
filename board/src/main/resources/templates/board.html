@@ -2,84 +2,134 @@
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="header :: head"></th:block>
 <body>
-<header>
+<main class="container-fluid">
+    <div class="row d-flex">
+        <div class="col-12 p-3 mb-2 bg-primary text-white d-flex">
+            <label class="col-6 h4 offset-md-1">게시글</label>
+            <label class="col-2 text-center basic-bottom-margin offset-md-1"
+                   th:text="'환영합니다. '+${session.get('user-id')}+' 님'"></label>
+            <button class="col-1 btn btn-light basic-bottom-margin" type="button" onclick="location.href='/signout'">
+                로그아웃
+            </button>
+        </div>
+        <div class="col-10 offset-md-1">
+            <div class="col-12 ">
+                <div class="d-flex">
+                    <label class="h4 fw-bold basic-top-margin"
+                           th:text="${boardDto.getTitle()}"></label>
+                    <div class="d-flex col-3 offset-md-10 basic-top-margin"
+                         th:if="${boardDto.userId == session.get('user-id')}">
+                        <div>
+                            <button class="btn btn-outline-primary" type="button" onclick="location.href='/home'">목록
+                            </button>
+                        </div>
+                        <div class="basic-left-margin">
+                            <form th:action="@{/home/board/update}" method="get">
+                                <input name="id" class="hide-component" th:value="${boardDto.getId()}">
+                                <button class="btn btn-outline-primary" type="submit">수정</button>
+                            </form>
+                        </div>
+                        <div class="basic-left-margin">
+                            <form th:action="@{/home/board/delete}" th:method="post">
+                                <input name="id" class="hide-component" th:value="${boardDto.getId()}">
+                                <button class="btn btn-outline-primary" type="submit">삭제</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                <div class="view-height">
+                    <label th:utext="${boardDto.getContent()}" }></label>
+                </div>
+                <div id="attach-list">
+                    <hr/>
+                    <ul th:each="attachFile:${previewAttachFileDtoList}" id="attach-file-list">
+                        <li><a th:href="@{/home/board/download(attachFileId=${attachFile.getAttachFileId()})}"
+                               th:text="${attachFile.getFileName()}"></a></li>
+                    </ul>
+                </div>
+                <hr/>
+                <label class="h4">댓글</label>
+                <hr/>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>내용</th>
+                        <th>작성자</th>
+                        <th>날짜</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="commentList : ${commentDtoList}">
+                        <td th:text="${commentListStat.count}"></td>
+                        <td>
+                            <form th:action="@{/home/board/comment/update}" th:method="post">
+                                <input name="id" class="hide-component" th:value="${commentList.getId()}"></input>
+                                <input name="userId" class="hide-component"
+                                       th:value="${commentList.getUserId()}"></input>
+                                <input name="boardId" class="hide-component"
+                                       th:value="${commentList.getBoardId()}"></input>
+                                <input name="createdAt" class="hide-component"
+                                       th:value="${commentList.getCreatedAt()}"></input>
+                                <label th:id="'comment-label' + ${commentList.getId()}"
+                                       th:text="${commentList.getContentOfComment()}"
+                                       th:value="${commentList.getContentOfComment()}"></label>
+                                <div class="d-flex">
+                                <textarea th:id="'comment-textarea'+${commentList.getId()}" name="contentOfComment"
+                                          th:text="${commentList.getContentOfComment()}"
+                                          class="hide-component form-control"></textarea>
+                                    <button th:id="'complete-button'+${commentList.getId()}"
+                                            class="hide-component btn btn-outline-primary col-1" type="submit">완료
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                        <td th:text="${commentList.getUserId()}"></td>
+                        <td th:text="${#temporals.format(commentList.getUpdatedAt, 'yyyy-MM-dd HH:mm') != null ? #temporals.format(commentList.getUpdatedAt, 'yyyy-MM-dd HH:mm') : #temporals.format(commentList.getCreatedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <form th:id="'delete-button'+${commentList.getId()}"
+                                  th:action="@{/home/board/comment/delete}"
+                                  th:if="${commentList.getUserId() == session.get('user-id')}"
+                                  th:method="post">
+                                <input name="id" class="hide-component" th:value="${commentList.getId()}">
+                                <input name="boardId" class="hide-component" th:value="${commentList.getBoardId()}">
+                                <button class="btn btn-outline-primary" th:id="'fix-button'+${commentList.getId()}"
+                                        type="button"
+                                        th:if="${commentList.getUserId() == session.get('user-id')}"
+                                        th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">수정
+                                </button>
+                                <button class="btn btn-outline-primary" type="submit">삭제</button>
+                            </form>
+                            <button th:id="'cancel-button'+${commentList.getId()}"
+                                    class="hide-component btn btn-outline-primary"
+                                    type="button"
+                                    th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">취소
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
-</header>
-<main>
-    <div>
-        <label style="font-size: 30px;" th:text="${boardDto.getTitle()}"></label>
-        <hr/>
-        <label th:utext="${boardDto.getContent()}" }></label>
-        <hr/>
-        <form th:action="@{/home/board/update}" method="get">
-            <input name="id" class="hidden" th:value="${boardDto.getId()}">
-            <button type="submit">수정</button>
-        </form>
-        <form th:action="@{/home/board/delete}" th:method="post">
-            <input name="id" type="hidden" th:value="${boardDto.getId()}">
-            <button type="submit">삭제</button>
-        </form>
-        <hr/>
-        <h2>댓글</h2>
-        <hr/>
-        <table class="table">
-            <thead>
-            <tr>NO</tr>
-            <tr>내용</tr>
-            <tr>작성자</tr>
-            <tr>날짜</tr>
-            </thead>
-            <tbody>
-            <tr th:each="commentList : ${commentDtoList}">
-                <td th:text="${commentListStat.count}"></td>
-                <td>
-                    <form th:action="@{/home/board/comment/update}" th:method="post">
-                        <input name="id" type="hidden" th:value="${commentList.getId()}"></input>
-                        <input name="userId" type="hidden" th:value="${commentList.getUserId()}"></input>
-                        <input name="boardId" type="hidden" th:value="${commentList.getBoardId()}"></input>
-                        <input name="createdAt" type="hidden" th:value="${commentList.getCreatedAt()}"></input>
-                        <label th:id="'comment-label' + ${commentList.getId()}"
-                               th:text="${commentList.getContentOfComment()}"
-                               th:value="${commentList.getContentOfComment()}"></label>
-                        <textarea th:id="'comment-textarea'+${commentList.getId()}" name="contentOfComment"
-                                  th:text="${commentList.getContentOfComment()}" class="hidden"></textarea>
-                        <button th:id="'fix-button'+${commentList.getId()}" type="button"
-                                th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">수정
-                        </button>
-                        <button th:id="'complete-button'+${commentList.getId()}" class="hidden" type="submit">완료
-                        </button>
-                    </form>
-                </td>
-                <td th:text="${commentList.getUserId()}"></td>
-                <td th:text="${#temporals.format(commentList.getUpdatedAt, 'yyyy-MM-dd HH:mm') != null ? #temporals.format(commentList.getUpdatedAt, 'yyyy-MM-dd HH:mm') : #temporals.format(commentList.getCreatedAt, 'yyyy-MM-dd HH:mm')}"></td>
-                <td>
-                    <form th:id="'delete-button'+${commentList.getId()}" th:action="@{/home/board/comment/delete}"
-                          th:method="post">
-                        <input name="id" type="hidden" th:value="${commentList.getId()}">
-                        <input name="boardId" type="hidden" th:value="${commentList.getBoardId()}">
-                        <button type="submit">삭제</button>
-                    </form>
-                    <button th:id="'cancel-button'+${commentList.getId()}" class="hidden" type="button"
-                            th:onclick="'convertToTextarea(\'' + ${commentList.getId()} + '\')'">취소
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <hr/>
-        <label>댓글작성</label>
-        <form th:action="@{/home/board/comment/create}" onsubmit="return checkCreateEmpty();" method="post">
-            <input name="boardId" type="hidden" th:value="${boardDto.getId()}">
-            <textarea id="content-of-comment" name="contentOfComment"></textarea>
-            <button type="submit">작성</button>
-        </form>
-        <hr/>
-        <button type="button" onclick="location.href='/home'">목록</button>
+                <hr/>
+                <label class="form-label h4 mb-4">댓글작성</label>
+                <form th:action="@{/home/board/comment/create}" onsubmit="return checkCreateEmpty();" method="post">
+                    <input name="boardId" class="hide-component" th:value="${boardDto.getId()}">
+                    <div class="d-flex">
+                        <div class="col-11">
+                            <textarea class="form-control" id="content-of-comment" name="contentOfComment"></textarea>
+                        </div>
+                        <div class="col-1">
+                            <button class="btn btn-outline-primary basic-top-margin basic-left-margin"
+                                    type="submit">작성
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </main>
-<footer>
-
-</footer>
 <script src="/js/board.js"></script>
 </body>
 </html>
