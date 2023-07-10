@@ -29,20 +29,20 @@ function convertToTextarea(commentId) {
     var deleteButton = document.getElementById("delete-button" + commentId);
     var cancelButton = document.getElementById("cancel-button" + commentId);
 
-    if (label.classList.contains("hidden")) {
-        label.classList.remove("hidden");
-        textarea.classList.add("hidden");
-        completeButton.classList.add("hidden");
-        fixButton.classList.remove("hidden");
-        cancelButton.classList.add("hidden");
-        deleteButton.classList.remove("hidden");
+    if (label.classList.contains("hide-component")) {
+        label.classList.remove("hide-component");
+        textarea.classList.add("hide-component");
+        completeButton.classList.add("hide-component");
+        fixButton.classList.remove("hide-component");
+        cancelButton.classList.add("hide-component");
+        deleteButton.classList.remove("hide-component");
     } else {
-        label.classList.add("hidden");
-        textarea.classList.remove("hidden");
-        fixButton.classList.add("hidden");
-        completeButton.classList.remove("hidden");
-        deleteButton.classList.add("hidden");
-        cancelButton.classList.remove("hidden");
+        label.classList.add("hide-component");
+        textarea.classList.remove("hide-component");
+        fixButton.classList.add("hide-component");
+        completeButton.classList.remove("hide-component");
+        deleteButton.classList.add("hide-component");
+        cancelButton.classList.remove("hide-component");
         textarea.value = label.innerText;
     }
 }
