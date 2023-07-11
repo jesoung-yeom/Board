@@ -58,14 +58,14 @@ public class CommentService {
     public List<CommentDto> findByBoardId(Long id) {
         List<Comment> commentList = this.commentRepository.findByBoardId(id);
         List<CommentDto> commentDtoList = new ArrayList<>();
-        for (int i = 0; i < commentList.size(); i++) {
+        for (Comment comment : commentList) {
             CommentDto commentDto = CommentDto.builder()
-                    .id(commentList.get(i).getId())
-                    .boardId(commentList.get(i).getBoardId())
-                    .userId(commentList.get(i).getUserId())
-                    .contentOfComment(commentList.get(i).getContentOfComment())
-                    .createdAt(commentList.get(i).getCreatedAt())
-                    .updatedAt(commentList.get(i).getUpdatedAt())
+                    .id(comment.getId())
+                    .boardId(comment.getBoardId())
+                    .userId(comment.getUserId())
+                    .contentOfComment(comment.getContentOfComment())
+                    .createdAt(comment.getCreatedAt())
+                    .updatedAt(comment.getUpdatedAt())
                     .build();
             commentDtoList.add(commentDto);
         }

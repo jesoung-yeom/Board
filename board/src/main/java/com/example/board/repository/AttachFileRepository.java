@@ -17,7 +17,7 @@ public interface AttachFileRepository extends JpaRepository<AttachFile, Long> {
     List<AttachFile> findAllByBoardId(Long id);
 
     void deleteAllByBoardId(Long id);
-    
+
     void deleteAllByBoardIdAndFileType(Long id,String fileType);
 
 }

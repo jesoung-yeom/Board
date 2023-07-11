@@ -3,7 +3,6 @@ package com.example.board.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.context.annotation.Primary;
 
 @Entity
 @Data

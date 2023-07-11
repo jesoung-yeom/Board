@@ -24,6 +24,7 @@ public class SignUpController {
     public String signup(HttpSession session, AccountDto accountDto, Model model) {
         if (this.signUpService.signUp(accountDto)) {
             session.setAttribute("user-id", accountDto.getUserId());
+
             return "redirect:/home";
         } else {
             model.addAttribute("message", "생성오류");
