@@ -43,7 +43,7 @@ public class BoardFileService {
                 AttachFile attachFile = new AttachFile();
                 attachFile.setBoardId(uploadFileDto.getBoardId())
                         .setFileName(uploadFileDto.getAttachFileList().get(i).getOriginalFilename())
-                        .setFileType("attach")
+                        .setFileType(EConstant.EFileType.attach.getFileType())
                         .setFileSize(uploadFileDto.getAttachFileList().get(i).getSize())
                         .setFilePath(saveFile(uploadFileDto.getAttachFileList().get(i)))
                         .setFileExtension(extractFileExtension(uploadFileDto.getAttachFileList().get(i).getOriginalFilename()))
@@ -57,7 +57,7 @@ public class BoardFileService {
     }
 
     public List<PreviewAttachFileDto> getPreviewAttachFileList(BoardDto boardDto) {
-        List<AttachFile> attachList = this.attachFileRepository.findAllByBoardIdAndFileType(boardDto.getId(), "attach");
+        List<AttachFile> attachList = this.attachFileRepository.findAllByBoardIdAndFileType(boardDto.getId(), EConstant.EFileType.attach.getFileType());
         List<PreviewAttachFileDto> previewList = new ArrayList<>();
         for (int i = 0; i < attachList.size(); i++) {
             PreviewAttachFileDto previewAttachFileDto = PreviewAttachFileDto.builder()
@@ -123,7 +123,7 @@ public class BoardFileService {
 
         try {
 
-            this.attachFileRepository.deleteAllByBoardIdAndFileType(boardDto.getId(), "board");
+            this.attachFileRepository.deleteAllByBoardIdAndFileType(boardDto.getId(), EConstant.EFileType.board.getFileType());
             if (!attachFileList.isEmpty()) {
                 this.attachFileRepository.saveAll(attachFileList);
             }
@@ -145,7 +145,7 @@ public class BoardFileService {
     }
 
     public boolean removeAllAttachFile(UploadFileDto uploadFileDto) {
-        List<AttachFile> removeList = this.attachFileRepository.findAllByBoardIdAndFileType(uploadFileDto.getBoardId(), "attach");
+        List<AttachFile> removeList = this.attachFileRepository.findAllByBoardIdAndFileType(uploadFileDto.getBoardId(),  EConstant.EFileType.attach.getFileType());
         for (int i = 0; i < removeList.size(); i++) {
             File file = new File(removeList.get(i).getFilePath());
             file.delete();
@@ -155,14 +155,14 @@ public class BoardFileService {
 
     public boolean fileUpdate(UploadFileDto uploadFileDto) {
         this.removeAllAttachFile(uploadFileDto);
-        this.attachFileRepository.deleteAllByBoardIdAndFileType(uploadFileDto.getBoardId(), "attach");
+        this.attachFileRepository.deleteAllByBoardIdAndFileType(uploadFileDto.getBoardId(),  EConstant.EFileType.attach.getFileType());
         List<AttachFile> fileList = new ArrayList<>();
         if (uploadFileDto.getAttachFileList() != null) {
             for (int i = 0; i < uploadFileDto.getAttachFileList().size(); i++) {
                 AttachFile attachFile = new AttachFile();
                 attachFile.setBoardId(uploadFileDto.getBoardId())
                         .setFileName(uploadFileDto.getAttachFileList().get(i).getOriginalFilename())
-                        .setFileType("attach")
+                        .setFileType( EConstant.EFileType.attach.getFileType())
                         .setFileSize(uploadFileDto.getAttachFileList().get(i).getSize())
                         .setFilePath(saveFile(uploadFileDto.getAttachFileList().get(i)))
                         .setFileExtension(extractFileExtension(uploadFileDto.getAttachFileList().get(i).getOriginalFilename()))
@@ -187,7 +187,7 @@ public class BoardFileService {
     }
 
     public ArrayList<String> convertToBase64(BoardDto boardDto) {
-        List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileType(boardDto.getId(), "board");
+        List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileType(boardDto.getId(),  EConstant.EFileType.board.getFileType());
         ArrayList<String> convertList = new ArrayList<>();
         for (int i = 0; i < attachFileList.size(); i++) {
             try {
@@ -228,7 +228,7 @@ public class BoardFileService {
                 ImageIO.write(bufferedImage, fileExtension, bos);
                 attachFile.setBoardId(boardDto.getId())
                         .setFileName(fileName)
-                        .setFileType("board")
+                        .setFileType( EConstant.EFileType.board.getFileType())
                         .setFileSize((long) imageBytes.length)
                         .setFilePath(filePath)
                         .setFileExtension(fileExtension)

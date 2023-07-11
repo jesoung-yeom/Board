@@ -1,6 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.global.PageNationEnum;
+import com.example.board.global.EConstant;
 import com.example.board.model.dto.BoardDto;
 import com.example.board.model.dto.DownloadFileDto;
 import com.example.board.model.dto.PreviewAttachFileDto;
@@ -37,7 +37,7 @@ public class BoardController {
     @GetMapping("")
     public String home(@RequestParam(defaultValue = "0") int page, HttpSession session, Model model) {
         Optional<Object> checkAccount = Optional.ofNullable(session.getAttribute("user-id"));
-        Pageable pageable = PageRequest.of(page, PageNationEnum.EPage.page.getPageSize());
+        Pageable pageable = PageRequest.of(page, EConstant.EPage.page.getPageSize());
         Page<BoardDto> boardDtoList = this.boardService.findAll(pageable);
         model.addAttribute("boardDtoList", boardDtoList.getContent());
         model.addAttribute("currentPage", page);
