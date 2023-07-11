@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 @Data
