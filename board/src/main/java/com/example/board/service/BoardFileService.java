@@ -5,6 +5,7 @@ import com.example.board.model.dto.BoardDto;
 import com.example.board.model.dto.DownloadFileDto;
 import com.example.board.model.dto.PreviewAttachFileDto;
 import com.example.board.model.dto.UploadFileDto;
+import com.example.board.global.EConstant;
 import com.example.board.repository.AttachFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
@@ -12,6 +13,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,10 +36,11 @@ public class BoardFileService {
 
     private final AttachFileRepository attachFileRepository;
 
-    private String filePath;
+    @Value("${storage.path}")
+    private String localPath;
 
     public boolean fileAttach(UploadFileDto uploadFileDto) {
-        if (uploadFileDto.getAttachFileList().get(0).equals("")) {
+        if (!uploadFileDto.getAttachFileList().get(0).equals("")) {
             List<AttachFile> fileList = new ArrayList<AttachFile>();
             for (int i = 0; i < uploadFileDto.getAttachFileList().size(); i++) {
                 AttachFile attachFile = new AttachFile();
@@ -76,7 +79,7 @@ public class BoardFileService {
     }
 
     public String saveFile(MultipartFile file) {
-        Path filepath = Path.of("/Users/jesoung/desktop/filestorage/", file.getOriginalFilename());
+        Path filepath = Path.of(localPath, file.getOriginalFilename());
         try {
             Files.copy(file.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -223,7 +226,7 @@ public class BoardFileService {
             try {
                 ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
                 BufferedImage bufferedImage = ImageIO.read(bis);
-                String filePath = "/Users/jesoung/desktop/filestorage/" + fileName;
+                String filePath = localPath + fileName;
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
                 ImageIO.write(bufferedImage, fileExtension, bos);
                 attachFile.setBoardId(boardDto.getId())
