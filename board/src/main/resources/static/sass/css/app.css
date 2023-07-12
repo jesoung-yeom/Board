@@ -1,0 +1,41 @@
+.basic-left-margin {
+  margin-left: 1%;
+}
+
+.basic-right-margin {
+  margin-right: 1%;
+}
+
+.basic-top-margin {
+  margin-top: 1%;
+}
+
+.basic-bottom-margin {
+  margin-bottom: 1%;
+}
+
+.hide-component {
+  display: none;
+}
+
+.container-max-height {
+  height: 100vh;
+}
+
+.container-max-width {
+  width: 100vh;
+}
+
+.view-height {
+  height: 40%;
+}
+
+.summer-height {
+  height: 45%;
+}
+
+.summer-block-size {
+  resize: none;
+}
+
+/*# sourceMappingURL=app.css.map */
