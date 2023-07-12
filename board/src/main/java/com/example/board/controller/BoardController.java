@@ -147,21 +147,28 @@ public class BoardController {
     @PostMapping("/board/update")
     public String updateBoard(HttpSession session, BoardDto boardDto, UploadFileDto uploadFileDto, Model model) {
         boardDto.setUserId(session.getAttribute("user-id").toString());
+        uploadFileDto.setBoardId(boardDto.getId());
         if (!this.boardService.update(boardDto)) {
             model.addAttribute("message", "수정오류");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
         }
-        if (this.boardFileService.update(boardDto)) {
-            uploadFileDto.setBoardId(boardDto.getId());
-            this.boardFileService.fileUpdate(uploadFileDto);
-            return "redirect:/home/board?id=" + boardDto.getId();
-        } else {
+
+        if (!this.boardFileService.update(boardDto)) {
             model.addAttribute("message", "수정오류");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
         }
+
+        if (!this.boardFileService.fileUpdate(uploadFileDto)) {
+            model.addAttribute("message", "수정오류");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
+
+        return "redirect:/home/board?id=" + boardDto.getId();
     }
 }
