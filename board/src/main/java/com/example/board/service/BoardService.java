@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.global.EConstant;
 import com.example.board.model.Board;
 import com.example.board.model.dto.BoardDto;
 import com.example.board.repository.BoardRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -27,11 +29,14 @@ public class BoardService {
         BoardDto boardDto = BoardDto.builder()
                 .id(board.getId())
                 .title(board.getTitle())
-                .content(combineContent(board.getContent(), convertList))
                 .userId(board.getUserId())
+                .content(board.getContent())
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
                 .build();
+        if(convertList.size()>0&&convertList.get(0).isEmpty()!=true) {
+            boardDto.setContent(combineContent(board.getContent(), convertList));
+        }
 
         return boardDto;
     }
@@ -42,6 +47,7 @@ public class BoardService {
         for (int i = 0; i < images.size(); i++) {
             images.get(i).attr("src", "[image-" + i + "]");
         }
+
         return doc.toString();
     }
 
@@ -93,7 +99,7 @@ public class BoardService {
         board.setTitle(boardDto.getTitle())
                 .setContent(extractContent(boardDto.getContent()))
                 .setCreatedAt(LocalDateTime.now())
-                .setUserId(boardDto.getUserId());
+                .setUserId(boardDto.getUserId())
                 .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
 
         return this.boardRepository.save(board);
@@ -101,8 +107,10 @@ public class BoardService {
 
     public boolean delete(BoardDto boardDto) {
         try {
-            this.boardRepository.deleteById(boardDto.getId());
+            Optional<Board> board = Optional.ofNullable(this.boardRepository.findById(boardDto.getId()).orElse(null));
+            Board deleteBoard = board.get();
             deleteBoard.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+            this.boardRepository.save(deleteBoard);
 
             return true;
         } catch (Exception e) {
@@ -118,7 +126,7 @@ public class BoardService {
                 .setContent(extractContent(boardDto.getContent()))
                 .setCreatedAt(this.boardRepository.findById(board.getId()).get().getCreatedAt())
                 .setUpdatedAt(LocalDateTime.now())
-                .setUserId(boardDto.getUserId());
+                .setUserId(boardDto.getUserId())
                 .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
 
         try {
