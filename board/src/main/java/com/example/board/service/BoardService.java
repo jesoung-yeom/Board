@@ -65,23 +65,23 @@ public class BoardService {
     public List<BoardDto> findAll() {
         List<Board> boardList = this.boardRepository.findAll();
         List<BoardDto> boardDtoList = new ArrayList<>();
-        for (int i = 0; i < boardList.size(); i++) {
-            BoardDto boardListDto = BoardDto.builder()
-                    .id(boardList.get(i).getId())
-                    .title(boardList.get(i).getTitle())
-                    .content(boardList.get(i).getContent())
-                    .createdAt(boardList.get(i).getCreatedAt())
-                    .updatedAt(boardList.get(i).getUpdatedAt())
-                    .userId(boardList.get(i).getUserId())
+        for (Board board : boardList) {
+            BoardDto boardDto = BoardDto.builder()
+                    .id(board.getId())
+                    .title(board.getTitle())
+                    .content(board.getContent())
+                    .createdAt(board.getCreatedAt())
+                    .updatedAt(board.getUpdatedAt())
+                    .userId(board.getUserId())
                     .build();
-            boardDtoList.add(boardListDto);
+            boardDtoList.add(boardDto);
         }
 
         return boardDtoList;
     }
 
     public Page<BoardDto> findAll(Pageable pageable) {
-        Page<Board> boardPage = this.boardRepository.findAllByDeleted("Y", pageable);
+        Page<Board> boardPage = this.boardRepository.findAllByDeleted(EConstant.EDeletionStatus.exist.getStatus(), pageable);
         Page<BoardDto> boardPageDto = boardPage.map(m -> BoardDto.builder()
                 .id(m.getId())
                 .title(m.getTitle())
