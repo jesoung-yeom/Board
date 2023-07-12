@@ -75,7 +75,7 @@ public class BoardService {
     }
 
     public Page<BoardDto> findAll(Pageable pageable) {
-        Page<Board> boardPage = this.boardRepository.findAll(pageable);
+        Page<Board> boardPage = this.boardRepository.findAllByDeleted("Y", pageable);
         Page<BoardDto> boardPageDto = boardPage.map(m -> BoardDto.builder()
                 .id(m.getId())
                 .title(m.getTitle())
@@ -94,6 +94,7 @@ public class BoardService {
                 .setContent(extractContent(boardDto.getContent()))
                 .setCreatedAt(LocalDateTime.now())
                 .setUserId(boardDto.getUserId());
+                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
 
         return this.boardRepository.save(board);
     }
@@ -101,6 +102,7 @@ public class BoardService {
     public boolean delete(BoardDto boardDto) {
         try {
             this.boardRepository.deleteById(boardDto.getId());
+            deleteBoard.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
 
             return true;
         } catch (Exception e) {
@@ -117,6 +119,7 @@ public class BoardService {
                 .setCreatedAt(this.boardRepository.findById(board.getId()).get().getCreatedAt())
                 .setUpdatedAt(LocalDateTime.now())
                 .setUserId(boardDto.getUserId());
+                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
 
         try {
             this.boardRepository.save(board);

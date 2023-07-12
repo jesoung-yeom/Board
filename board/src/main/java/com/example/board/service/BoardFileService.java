@@ -50,7 +50,8 @@ public class BoardFileService {
                         .setFileSize(uploadFileDto.getAttachFileList().get(i).getSize())
                         .setFilePath(saveFile(uploadFileDto.getAttachFileList().get(i)))
                         .setFileExtension(extractFileExtension(uploadFileDto.getAttachFileList().get(i).getOriginalFilename()))
-                        .setUploadedAt(LocalDateTime.now());
+                        .setUploadedAt(LocalDateTime.now())
+                        .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
                 fileList.add(attachFile);
             }
             this.attachFileRepository.saveAll(fileList);
@@ -60,7 +61,7 @@ public class BoardFileService {
     }
 
     public List<PreviewAttachFileDto> getPreviewAttachFileList(BoardDto boardDto) {
-        List<AttachFile> attachList = this.attachFileRepository.findAllByBoardIdAndFileType(boardDto.getId(), EConstant.EFileType.attach.getFileType());
+        List<AttachFile> attachList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
         List<PreviewAttachFileDto> previewList = new ArrayList<>();
         for (int i = 0; i < attachList.size(); i++) {
             PreviewAttachFileDto previewAttachFileDto = PreviewAttachFileDto.builder()
@@ -83,7 +84,7 @@ public class BoardFileService {
         try {
             Files.copy(file.getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            //여기도
+
             return "";
         }
 
@@ -190,7 +191,7 @@ public class BoardFileService {
     }
 
     public ArrayList<String> convertToBase64(BoardDto boardDto) {
-        List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileType(boardDto.getId(),  EConstant.EFileType.board.getFileType());
+        List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.board.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
         ArrayList<String> convertList = new ArrayList<>();
         for (int i = 0; i < attachFileList.size(); i++) {
             try {
@@ -231,11 +232,12 @@ public class BoardFileService {
                 ImageIO.write(bufferedImage, fileExtension, bos);
                 attachFile.setBoardId(boardDto.getId())
                         .setFileName(fileName)
-                        .setFileType( EConstant.EFileType.board.getFileType())
+                        .setFileType(EConstant.EFileType.board.getFileType())
                         .setFileSize((long) imageBytes.length)
                         .setFilePath(filePath)
                         .setFileExtension(fileExtension)
-                        .setUploadedAt(LocalDateTime.now());
+                        .setUploadedAt(LocalDateTime.now())
+                        .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
                 boarFileList.add(attachFile);
                 bis.close();
             } catch (IOException e) {
