@@ -29,4 +29,18 @@ public class EConstant {
             return type;
         }
     }
+
+    public enum EDeletionStatus {
+        exist("N"),delete("Y");
+
+        private String status;
+
+        private EDeletionStatus(String status) {
+            this.status = status;
+        }
+
+        public String getStatus() {
+            return this.status;
+        }
+    }
 }
