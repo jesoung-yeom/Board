@@ -11,7 +11,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Comment save(Comment comment);
 
-    List<Comment> findByBoardId(Long id);
+    List<Comment> findByBoardIdAndDeleted(Long id,String deleted);
 
     void deleteById(Long id);
 

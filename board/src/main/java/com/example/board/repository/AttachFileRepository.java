@@ -6,18 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface AttachFileRepository extends JpaRepository<AttachFile, Long> {
 
     AttachFile findByBoardIdAndFileName(Long id, String fileName);
-    List<AttachFile> findAllByBoardIdAndFileType(Long id, String type);
+    List<AttachFile> findAllByBoardIdAndFileTypeAndDeleted(Long id, String type,String deleted);
 
-    List<AttachFile> findAllByBoardId(Long id);
+    Optional<AttachFile> findByBoardIdAndFileNameAndFileSizeAndFileTypeAndDeleted(Long id, String fileName, Long fileSize, String type, String deleted);
 
-    void deleteAllByBoardId(Long id);
-
-    void deleteAllByBoardIdAndFileType(Long id,String fileType);
+    List<AttachFile> findAllByBoardIdAndDeleted(Long id,String deleted);
 
 }

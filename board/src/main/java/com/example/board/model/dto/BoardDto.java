@@ -21,4 +21,6 @@ public class BoardDto {
 
     private LocalDateTime updatedAt;
 
+    private String deleted;
+
 }

@@ -38,4 +38,7 @@ public class AttachFile {
     @Column(name = "uploaded_at")
     private LocalDateTime uploadedAt;
 
+    @Column(name = "deleted")
+    private String deleted;
+
 }

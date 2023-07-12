@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.global.EConstant;
 import com.example.board.model.Comment;
 import com.example.board.model.dto.CommentDto;
 import com.example.board.repository.CommentRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,14 +23,18 @@ public class CommentService {
         comment.setBoardId(commentDto.getBoardId())
                 .setUserId(commentDto.getUserId())
                 .setContentOfComment(commentDto.getContentOfComment())
-                .setCreatedAt(LocalDateTime.now());
+                .setCreatedAt(LocalDateTime.now())
+                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
 
         return this.commentRepository.save(comment);
     }
 
     public boolean delete(Long id) {
         try {
-            this.commentRepository.deleteById(id);
+            Optional<Comment> comment = Optional.ofNullable(this.commentRepository.findById(id).orElse(null));
+            Comment deleteComment = comment.get();
+            deleteComment.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+            this.commentRepository.save(deleteComment);
 
             return true;
         } catch (Exception e) {
@@ -56,7 +62,7 @@ public class CommentService {
     }
 
     public List<CommentDto> findByBoardId(Long id) {
-        List<Comment> commentList = this.commentRepository.findByBoardId(id);
+        List<Comment> commentList = this.commentRepository.findByBoardIdAndDeleted(id, EConstant.EDeletionStatus.exist.getStatus());
         List<CommentDto> commentDtoList = new ArrayList<>();
         for (Comment comment : commentList) {
             CommentDto commentDto = CommentDto.builder()
