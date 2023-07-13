@@ -36,16 +36,14 @@ public class BoardController {
 
     @GetMapping("")
     public String home(@RequestParam(defaultValue = "0") int page, HttpSession session, Model model) {
-        Optional<Object> checkAccount = Optional.ofNullable(session.getAttribute("user-id"));
-        Pageable pageable = PageRequest.of(page, EConstant.EPage.page.getPageSize());
-        Page<BoardDto> boardDtoList = this.boardService.findAll(pageable);
-        model.addAttribute("boardDtoList", boardDtoList.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", boardDtoList.getTotalPages());
-
-
-        if (checkAccount != null) {
-            //model.addAttribute("boardDtoList", this.boardService.findAll());
+        if (session.getAttribute("user-id") != null) {
+            Pageable pageable = PageRequest.of(page, EConstant.EPage.page.getPageSize());
+            Page<BoardDto> boardDtoList = this.boardService.findAll(pageable);
+            List<BoardDto> contents = boardDtoList.getContent();
+            int totalPages = boardDtoList.getTotalPages();
+            model.addAttribute("boardDtoList", contents);
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", totalPages);
 
             return "home";
         } else {
@@ -57,9 +55,12 @@ public class BoardController {
     @GetMapping("/board")
     public String showBoard(BoardDto boardDto, Model model) {
         try {
-            model.addAttribute("boardDto", this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto)));
-            model.addAttribute("previewAttachFileDtoList", this.boardFileService.getPreviewAttachFileList(boardDto));
-            model.addAttribute("commentDtoList", this.commentService.findByBoardId(boardDto.getId()));
+            BoardDto resultBoardDto = this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto));
+            List<PreviewAttachFileDto> previewAttachFileDtoList = this.boardFileService.getPreviewAttachFileList(boardDto);
+            List<CommentDto> commentDtoList = this.commentService.findByBoardId(boardDto.getId());
+            model.addAttribute("boardDto", resultBoardDto);
+            model.addAttribute("previewAttachFileDtoList", previewAttachFileDtoList);
+            model.addAttribute("commentDtoList", commentDtoList);
 
             return "board";
         } catch (Exception e) {
@@ -95,10 +96,11 @@ public class BoardController {
 
     @GetMapping("/board/update")
     public String showUpdateBoard(BoardDto boardDto, Model model) {
-
         try {
-            model.addAttribute("boardDto", this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto)));
-            model.addAttribute("previewAttachFileDtoList", this.boardFileService.getPreviewAttachFileList(boardDto));
+            BoardDto resultBoardDto = this.boardService.findById(boardDto.getId(), this.boardFileService.convertToBase64(boardDto));
+            List<PreviewAttachFileDto> previewAttachFileDtoList = this.boardFileService.getPreviewAttachFileList(boardDto);
+            model.addAttribute("boardDto", resultBoardDto);
+            model.addAttribute("previewAttachFileDtoList", previewAttachFileDtoList);
             return "board-update";
         } catch (Exception e) {
             model.addAttribute("message", "오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
