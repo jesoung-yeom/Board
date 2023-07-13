@@ -40,3 +40,4 @@ out/
 ### DS Store & idea
 *.DS_Store
 *.idea
+*.map
