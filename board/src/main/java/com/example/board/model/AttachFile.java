@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Table(name = "file_attachments")
+@Table(name = "file_attachment")
 @Accessors(chain = true)
 public class AttachFile {
 
