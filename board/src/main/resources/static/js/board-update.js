@@ -9,16 +9,15 @@ $(document).ready(function () {
             ['color'],
             ['para', ['ul', 'ol']],
             ['insert', ['picture']],
-        ],callbacks: {
-            onChange: function(contents, $editable) {
-                // Summernote 내용 변경 시 호출되는 콜백 함수
+        ], callbacks: {
+            onChange: function (contents, $editable) {
                 $('textarea[name="content"]').val(contents);
             }
         },
         buttons: {
             picture: function (context) {
-                var ui = $.summernote.ui;
-                var button = ui.button({
+                const ui = $.summernote.ui;
+                const button = ui.button({
                     contents: '<i class="note-icon-picture"></i>',
                     tooltip: '그림 삽입',
                     click: function () {
@@ -27,45 +26,107 @@ $(document).ready(function () {
                 return button.render();
             }
         },
-        height:300,
+        height: 300,
     });
+
     $('.dropdown-toggle').dropdown();
 
 });
-function handleFileSelect(event) {
-    const fileList = event.target.files;
 
-    const listContainer = document.getElementById("attach-file-list");
+class BoardUpdate {
+    title;
+    content;
+    fileInput;
 
-    listContainer.innerHTML = "";
+    boardId;
 
-    for (let i = 0; i < fileList.length; i++) {
-        const file = fileList[i];
-        const listItem = document.createElement("li");
-        listItem.textContent = file.name;
+    updateButton;
+    cancelButton;
+    logoutButton;
 
-        listContainer.appendChild(listItem);
+    updateForm;
+
+    constructor() {
+        this.boardId = document.getElementById("board-id").value;
+        this.title = document.getElementById("title-editor");
+        this.content = document.getElementById("content-editor");
+        this.fileInput = document.getElementById("attach-file");
+        this.updateButton = document.getElementById("update-button");
+        this.cancelButton = document.getElementById("cancel-button");
+        this.logoutButton = document.getElementById("logout-button");
+
+        this.updateForm = document.getElementById("update-form");
+
+        this.fileInput.addEventListener("change", this.handleFileSelect);
+
+        this.updateButton.addEventListener("click", this.submitUpdateForm);
+        this.logoutButton.addEventListener("click", this.logout);
+        this.cancelButton.addEventListener("click", this.cancel);
+
     }
-}
-const fileInput = document.getElementById("attach-file");
-fileInput.addEventListener("change", handleFileSelect);
 
-function checkEdit() {
-    const title = document.getElementById("title-editor").value;
-    const content = document.getElementById("content-editor").value;
+    submitUpdateForm = () => {
+        event.preventDefault();
+        if (this.checkEdit()) {
+            this.updateForm.action = "/home/board/update";
+            this.updateForm.method = "POST";
+            this.updateForm.enctype = "multipart/form-data";
+            this.updateForm.submit();
+        }
+    }
+    cancel = () => {
+        if (this.checkConfirm("수정을 취소하시겠습니까?")) {
+            window.location.href = "/home/board?id=" + this.boardId;
+        }
+    }
 
-    if (title.trim() === '') {
-        alert("빈 제목으로 수정하실 수 없습니다.")
+    logout = () => {
+        if (this.checkConfirm("로그아웃하시겠습니까?")) {
+            window.location.href = "/signout";
+        }
+    }
+
+    checkEdit = () => {
+        if (this.title.value.trim() === '') {
+            alert("빈 제목으로 수정하실 수 없습니다.")
+
+            return false;
+        } else if (this.content.value.trim() === '') {
+            alert("빈 내용으로 수정하실 수 없습니다.");
+
+            return false;
+        } else {
+
+            alert("글 수정이 완료되었습니다.")
+            return true;
+        }
+    }
+
+    handleFileSelect = (event) => {
+        const fileList = event.target.files;
+
+        const listContainer = document.getElementById("attach-file-list");
+
+        listContainer.innerHTML = "";
+
+        for (let i = 0; i < fileList.length; i++) {
+            const file = fileList[i];
+            const listItem = document.createElement("li");
+            listItem.textContent = file.name;
+
+            listContainer.appendChild(listItem);
+        }
+    }
+
+    checkConfirm = (msg) => {
+        event.preventDefault();
+        const confirmed = confirm(msg);
+        if (confirmed) {
+
+            return true;
+        }
 
         return false;
-    } else if(content.trim() === '') {
-        alert("빈 내용으로 수정하실 수 없습니다.");
-
-        return false;
-    } else{
-
-        alert("글 수정이 완료되었습니다.")
-        return true;
     }
-}
 
+}

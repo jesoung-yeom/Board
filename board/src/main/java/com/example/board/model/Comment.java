@@ -41,6 +41,9 @@ public class Comment {
     private String deleted;
 
     public Comment(CommentDto commentDto) {
+        if (commentDto.getId() != null) {
+            this.id = commentDto.getId();
+        }
         this.boardId = commentDto.getBoardId();
         this.userId = commentDto.getUserId();
         this.contentOfComment = commentDto.getContentOfComment();
