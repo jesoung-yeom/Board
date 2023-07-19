@@ -13,18 +13,13 @@ public class SignUpService {
     private final AccountRepository accountRepository;
 
     public boolean signUp(AccountDto accountDto) {
-        Account account = new Account();
-        account.setUserId(accountDto.getUserId())
-                .setUserEmail(accountDto.getUserEmail())
-                .setUserPw(accountDto.getUserPw())
-                .setUserName(accountDto.getUserName());
+        Account account = new Account(accountDto);
         if (this.accountRepository.findByUserId(accountDto.getUserId()) == null) {
             this.accountRepository.save(account);
 
             return true;
-        } else {
-
-            return false;
         }
+
+        return false;
     }
 }

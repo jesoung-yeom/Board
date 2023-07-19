@@ -5,16 +5,11 @@ import com.example.board.model.Board;
 import com.example.board.model.dto.BoardDto;
 import com.example.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -26,81 +21,20 @@ public class BoardService {
 
     public BoardDto findById(Long id, ArrayList<String> convertList) {
         Board board = this.boardRepository.findById(id).orElse(null);
-        BoardDto boardDto = BoardDto.builder()
-                .id(board.getId())
-                .title(board.getTitle())
-                .userId(board.getUserId())
-                .content(board.getContent())
-                .createdAt(board.getCreatedAt())
-                .updatedAt(board.getUpdatedAt())
-                .build();
-        if(convertList.size()>0&&convertList.get(0).isEmpty()!=true) {
-            boardDto.setContent(combineContent(board.getContent(), convertList));
-        }
+        BoardDto boardDto = new BoardDto(board, convertList);
 
         return boardDto;
     }
 
-    public String extractContent(String content) {
-        Document doc = Jsoup.parse(content);
-        Elements images = doc.select("img");
-        for (int i = 0; i < images.size(); i++) {
-            images.get(i).attr("src", "[image-" + i + "]");
-        }
-
-        return doc.toString();
-    }
-
-    public String combineContent(String content, ArrayList<String> convertList) {
-        Document doc = Jsoup.parse(content);
-        Elements images = doc.select("img");
-        for (int i = 0; i < images.size(); i++) {
-            images.get(i).attr("src", convertList.get(i).toString());
-        }
-
-        return doc.toString();
-    }
-
-
-    public List<BoardDto> findAll() {
-        List<Board> boardList = this.boardRepository.findAll();
-        List<BoardDto> boardDtoList = new ArrayList<>();
-        for (Board board : boardList) {
-            BoardDto boardDto = BoardDto.builder()
-                    .id(board.getId())
-                    .title(board.getTitle())
-                    .content(board.getContent())
-                    .createdAt(board.getCreatedAt())
-                    .updatedAt(board.getUpdatedAt())
-                    .userId(board.getUserId())
-                    .build();
-            boardDtoList.add(boardDto);
-        }
-
-        return boardDtoList;
-    }
-
     public Page<BoardDto> findAll(Pageable pageable) {
         Page<Board> boardPage = this.boardRepository.findAllByDeleted(EConstant.EDeletionStatus.exist.getStatus(), pageable);
-        Page<BoardDto> boardPageDto = boardPage.map(m -> BoardDto.builder()
-                .id(m.getId())
-                .title(m.getTitle())
-                .content(m.getContent())
-                .userId(m.getUserId())
-                .createdAt(m.getCreatedAt())
-                .updatedAt(m.getUpdatedAt())
-                .build());
+        Page<BoardDto> boardPageDto = boardPage.map(m -> new BoardDto(m));
 
         return boardPageDto;
     }
 
     public Board create(BoardDto boardDto) {
-        Board board = new Board();
-        board.setTitle(boardDto.getTitle())
-                .setContent(extractContent(boardDto.getContent()))
-                .setCreatedAt(LocalDateTime.now())
-                .setUserId(boardDto.getUserId())
-                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
+        Board board = new Board(boardDto);
 
         return this.boardRepository.save(board);
     }
@@ -120,14 +54,8 @@ public class BoardService {
     }
 
     public boolean update(BoardDto boardDto) {
-        Board board = new Board();
-        board.setId(boardDto.getId())
-                .setTitle(boardDto.getTitle())
-                .setContent(extractContent(boardDto.getContent()))
-                .setCreatedAt(this.boardRepository.findById(board.getId()).get().getCreatedAt())
-                .setUpdatedAt(LocalDateTime.now())
-                .setUserId(boardDto.getUserId())
-                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
+        boardDto.setCreatedAt(this.boardRepository.findById(boardDto.getId()).get().getCreatedAt());
+        Board board = new Board(boardDto);
 
         try {
             this.boardRepository.save(board);
