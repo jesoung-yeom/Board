@@ -28,7 +28,7 @@ class SignUp {
 
     submitDeleteForm = (event) => {
         event.preventDefault();
-        var errorMessage = this.checkSignUp();
+        const errorMessage = this.checkSignUp();
         if (this.resultSignUp(errorMessage)) {
             this.signUpForm.action = "/signup";
             this.signUpForm.method = "POST";
@@ -45,15 +45,15 @@ class SignUp {
         let msg = "";
         if (this.userName.value === "") {
             msg = "이름이 작성되지 않았습니다.";
-        }else if (this.userId.value === "") {
+        } else if (this.userId.value === "") {
             msg = "아이디가 작성되지 않았습니다.";
-        }else if (this.userEmail.value === "") {
+        } else if (this.userEmail.value === "") {
             msg = "이메일이 작성되지 않았습니다.";
-        }else if (!eMailPattern.test(this.userEmail.value)) {
+        } else if (!eMailPattern.test(this.userEmail.value)) {
             msg = "이메일 형식이 올바르지 않습니다.";
-        }else if (this.userPw.value === "") {
+        } else if (this.userPw.value === "") {
             msg = "비밀번호가 작성되지 않았습니다.";
-        }else if (this.reconfirmPw.value !== this.userPw.value) {
+        } else if (this.reconfirmPw.value !== this.userPw.value) {
             msg = "비밀번호가 일치하지 않습니다.";
         }
 
