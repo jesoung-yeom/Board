@@ -67,7 +67,10 @@ public class BoardController {
             model.addAttribute("message", "조회오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
             model.addAttribute("replaceUrl", "/home");
 
-            return "alert";
+        if (ObjectUtils.isEmpty(resultBoardDto)) {
+            log.error("Can't find board");
+
+            return "page-404";
         }
     }
 
@@ -106,7 +109,9 @@ public class BoardController {
             model.addAttribute("message", "오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
             model.addAttribute("replaceUrl", "/home");
 
-            return "alert";
+        if (ObjectUtils.isEmpty(resultBoardDto)) {
+
+            return "page-404";
         }
     }
 
