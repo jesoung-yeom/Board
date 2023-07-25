@@ -1,16 +1,14 @@
 package com.example.board.controller;
 
 import com.example.board.global.EConstant;
-import com.example.board.model.dto.BoardDto;
-import com.example.board.model.dto.DownloadFileDto;
-import com.example.board.model.dto.PreviewAttachFileDto;
-import com.example.board.model.dto.UploadFileDto;
+import com.example.board.model.dto.*;
 import com.example.board.service.BoardFileService;
 import com.example.board.service.BoardService;
 import com.example.board.service.CommentService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +28,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("home")
+@Slf4j
 public class BoardController {
     private final BoardService boardService;
     private final CommentService commentService;
@@ -75,18 +74,21 @@ public class BoardController {
     @GetMapping("/board/download")
     public void downloadAttachFile(PreviewAttachFileDto previewAttachFileDto, HttpServletResponse response, Model model) {
         DownloadFileDto downloadFileDto = this.boardFileService.downloadFile(previewAttachFileDto);
-        try {
 
+        if (ObjectUtils.isEmpty(downloadFileDto)) {
+            log.error("Can't download");
+        }
+
+        try {
             response.setContentType("application/octet-stream");
             response.setContentLength(Math.toIntExact(downloadFileDto.getFileSize()));
             response.setHeader("Content-Disposition", "attachment; fileName=\"" + UriUtils.encode(downloadFileDto.getFileName(), StandardCharsets.UTF_8) + "\";");
             response.setHeader("Content-Transfer-Encoding", "binary");
-
             response.getOutputStream().write(downloadFileDto.getFile());
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Occurred IOException during download");
         }
     }
 
@@ -130,6 +132,7 @@ public class BoardController {
 
             return "alert";
         }
+
         if (this.boardFileService.delete(boardDto)) {
 
             return "redirect:/home";
@@ -145,6 +148,7 @@ public class BoardController {
     public String updateBoard(HttpSession session, BoardDto boardDto, UploadFileDto uploadFileDto, Model model) {
         boardDto.setUserId(session.getAttribute("user-id").toString());
         uploadFileDto.setBoardId(boardDto.getId());
+
         if (!this.boardService.update(boardDto)) {
             model.addAttribute("message", "수정오류");
             model.addAttribute("replaceUrl", "/home");

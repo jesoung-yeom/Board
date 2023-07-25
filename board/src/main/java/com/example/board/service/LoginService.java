@@ -4,12 +4,14 @@ import com.example.board.model.Account;
 import com.example.board.model.dto.AccountDto;
 import com.example.board.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LoginService {
 
     private final AccountRepository accountRepository;
@@ -18,6 +20,7 @@ public class LoginService {
         Optional<Account> account = Optional.ofNullable(this.accountRepository.findByUserIdAndUserPw(accountDto.getUserId(), accountDto.getUserPw()));
 
         if (!account.isPresent()) {
+            log.info("Not match account");
 
             return false;
         }

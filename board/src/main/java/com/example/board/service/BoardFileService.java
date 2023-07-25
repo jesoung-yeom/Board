@@ -5,6 +5,7 @@ import com.example.board.model.AttachFile;
 import com.example.board.model.dto.*;
 import com.example.board.repository.AttachFileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,7 +24,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-
+@Slf4j
 public class BoardFileService {
 
     private final AttachFileRepository attachFileRepository;
@@ -34,11 +35,11 @@ public class BoardFileService {
     public boolean fileAttach(UploadFileDto uploadFileDto) {
         if (uploadFileDto.getAttachFileList().get(0).getSize() != 0) {
             List<AttachFile> attachFileList = this.setAttachFileList(uploadFileDto);
-
             this.attachFileRepository.saveAll(attachFileList);
 
             return true;
         }
+        log.error("Fail save all");
 
         return false;
     }
@@ -66,6 +67,7 @@ public class BoardFileService {
         try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
+            log.error("Occurred IOException during save file");
         }
     }
 
@@ -73,6 +75,7 @@ public class BoardFileService {
         Optional<AttachFile> attachFile = this.attachFileRepository.findById(previewAttachFileDto.getAttachFileId());
 
         if (!attachFile.isPresent()) {
+            log.error("Can't find attachFile");
 
             return new DownloadFileDto();
         }
@@ -91,6 +94,7 @@ public class BoardFileService {
 
             return true;
         }
+        log.error("Fail Create");
 
         return false;
     }
@@ -183,6 +187,7 @@ public class BoardFileService {
                 fis.close();
                 convertList.add("data:image/" + attachFile.getFileExtension() + ";base64," + Base64.getEncoder().encodeToString(imageBytes));
             } catch (IOException e) {
+                log.error("Occurred IOException during conversion");
 
                 return Collections.emptyList();
             }
@@ -216,6 +221,7 @@ public class BoardFileService {
                 boarFileList.add(attachFile);
                 bis.close();
             } catch (IOException e) {
+                log.error("Occurred IOException during conversion");
 
                 return Collections.emptyList();
             }

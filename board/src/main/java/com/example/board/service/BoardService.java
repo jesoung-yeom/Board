@@ -25,6 +25,7 @@ public class BoardService {
         Optional<Board> board = this.boardRepository.findById(id);
         
         if (!board.isPresent()) {
+            log.error("Can't find board");
 
             return new BoardDto();
         }
@@ -51,6 +52,7 @@ public class BoardService {
         Optional<Board> board = this.boardRepository.findById(boardDto.getId());
 
         if (!board.isPresent()) {
+            log.error("Can't not find board");
 
             return false;
         }
@@ -65,6 +67,7 @@ public class BoardService {
         Optional<Board> board = this.boardRepository.findById(boardDto.getId());
 
         if (!board.isPresent()) {
+            log.error("Can't not find board");
 
             return false;
         }

@@ -5,6 +5,7 @@ import com.example.board.model.dto.AccountDto;
 import com.example.board.service.LoginService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class LoginController {
 
     private final LoginService loginService;
@@ -23,14 +25,16 @@ public class LoginController {
     public String showLogin(HttpSession session) {
         Optional<Object> checkAccount = Optional.ofNullable(session.getAttribute("user-id"));
         if (checkAccount.isPresent()) {
+
             return "redirect:/home";
         }
+        log.info("Have not session");
+
         return "login";
     }
 
     @PostMapping("/signin")
     public String signIn(AccountDto accountDto, Model model, HttpSession session) {
-
         if (loginService.signIn(accountDto)) {
             session.setAttribute("user-id", accountDto.getUserId());
 
@@ -46,6 +50,7 @@ public class LoginController {
     @GetMapping("/signout")
     public String signOut(HttpSession session) {
         session.removeAttribute("user-id");
+
         return "redirect:/";
     }
 
