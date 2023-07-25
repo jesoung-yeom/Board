@@ -17,7 +17,7 @@ public class EConstant {
     }
 
     public enum EFileType {
-        board("board"),attach("attach");
+        board("board"), attach("attach");
 
         private String type;
 
@@ -31,7 +31,7 @@ public class EConstant {
     }
 
     public enum EDeletionStatus {
-        exist("N"),delete("Y");
+        exist("N"), delete("Y");
 
         private String status;
 

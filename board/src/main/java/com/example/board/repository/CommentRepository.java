@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
+
     Comment save(Comment comment);
 
     List<Comment> findByBoardIdAndDeleted(Long id,String deleted);

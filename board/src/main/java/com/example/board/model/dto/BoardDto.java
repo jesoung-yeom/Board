@@ -34,9 +34,11 @@ public class BoardDto {
         this.userId = board.getUserId();
         this.content = board.getContent();
         this.createdAt = board.getCreatedAt();
+
         if (board.getUpdatedAt() != null) {
             this.updatedAt = board.getUpdatedAt();
         }
+
         if (convertList.size() > 0 && convertList.get(0).isEmpty() != true) {
             this.content = combineContent(board.getContent(), convertList);
         }
@@ -48,6 +50,7 @@ public class BoardDto {
         this.userId = board.getUserId();
         this.content = board.getContent();
         this.createdAt = board.getCreatedAt();
+
         if (board.getUpdatedAt() != null) {
             this.updatedAt = board.getUpdatedAt();
         }
@@ -56,10 +59,11 @@ public class BoardDto {
     public String combineContent(String content, List<String> convertList) {
         Document doc = Jsoup.parse(content);
         Elements images = doc.select("img");
+
         for (int i = 0; i < images.size(); i++) {
             images.get(i).attr("src", convertList.get(i).toString());
+        }
 
         return doc.toString();
     }
-
 }
