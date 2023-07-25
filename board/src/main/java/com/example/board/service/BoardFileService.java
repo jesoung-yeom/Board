@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -118,7 +119,14 @@ public class BoardFileService {
         if (attachFileList.size() > 0 && attachFileList.get(0).getFileName() != null) {
             resultAttachFileList.addAll(attachFileList);
         }
-        this.attachFileRepository.saveAll(resultAttachFileList);
+
+        try {
+            this.attachFileRepository.saveAll(resultAttachFileList);
+        } catch (DataAccessException e) {
+            log.error("Occurred DataAccessException during conversion");
+
+            return false;
+        }
 
         return true;
     }
@@ -144,7 +152,14 @@ public class BoardFileService {
             if (attachFileList.size() > 0 && attachFileList.get(0).getFileName().isEmpty() != true) {
                 resultAttachFileList.addAll(attachFileList);
             }
-            this.attachFileRepository.saveAll(resultAttachFileList);
+
+            try {
+                this.attachFileRepository.saveAll(resultAttachFileList);
+            } catch (DataAccessException e) {
+                log.error("Occurred DataAccessException during conversion");
+
+                return false;
+            }
 
             return true;
         }
@@ -164,7 +179,13 @@ public class BoardFileService {
             attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
         }
 
-        this.attachFileRepository.saveAll(attachFileList.get());
+        try {
+            this.attachFileRepository.saveAll(attachFileList.get());
+        } catch (DataAccessException e) {
+            log.error("Occurred DataAccessException during conversion");
+
+            return false;
+        }
 
         return true;
     }

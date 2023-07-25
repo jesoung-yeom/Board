@@ -7,6 +7,7 @@ import com.example.board.model.dto.BoardDto;
 import com.example.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,14 @@ public class BoardService {
         }
 
         board.get().setDeleted(EConstant.EDeletionStatus.delete.getStatus());
-        this.boardRepository.save(board.get());
+
+        try {
+            this.boardRepository.save(board.get());
+        } catch (DataAccessException e) {
+            log.error("Occurred DataAccessException during conversion");
+
+            return false;
+        }
 
         return true;
     }
@@ -77,7 +85,14 @@ public class BoardService {
         boardDto.setCreatedAt(board.get().getCreatedAt());
         Board updateBoard = BoardFactory.convertBoard(boardDto);
         updateBoard.setUpdatedAt(LocalDateTime.now());
-        this.boardRepository.save(updateBoard);
+
+        try {
+            this.boardRepository.save(updateBoard);
+        } catch (DataAccessException e) {
+            log.error("Occurred DataAccessException during conversion");
+
+            return false;
+        }
 
         return true;
     }
