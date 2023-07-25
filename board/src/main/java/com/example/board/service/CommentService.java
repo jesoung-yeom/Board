@@ -24,16 +24,15 @@ public class CommentService {
     }
 
     public boolean delete(Long id) {
-        Optional<Comment> comment = Optional.ofNullable(this.commentRepository.findById(id).orElse(null));
-        Comment deleteComment = comment.get();
-        if (deleteComment != null) {
-            deleteComment.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
-            this.commentRepository.save(deleteComment);
+        Optional<Comment> comment = this.commentRepository.findById(id);
+        if (!comment.isPresent()) {
 
-            return true;
+            return false;
         }
+        comment.get().setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+        this.commentRepository.save(comment.get());
 
-        return false;
+        return true;
     }
 
     public boolean update(CommentDto commentDto) {

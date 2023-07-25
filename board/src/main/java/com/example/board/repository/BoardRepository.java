@@ -14,9 +14,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findAll();
 
-    Page<Board> findAllByDeleted(String deleted,Pageable pageable);
 
-   // Page<Board> findAll(Pageable pageable);
+    Page<Board> findAllByDeleted(String deleted, Pageable pageable);
 
     Board findById(long id);
 

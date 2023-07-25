@@ -5,6 +5,7 @@ import com.example.board.model.Board;
 import com.example.board.model.dto.BoardDto;
 import com.example.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,20 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 
     private final BoardRepository boardRepository;
 
-        Board board = this.boardRepository.findById(id).orElse(null);
-        BoardDto boardDto = new BoardDto(board, convertList);
     public BoardDto findById(Long id, List<String> convertList) {
+        Optional<Board> board = this.boardRepository.findById(id);
+        
+        if (!board.isPresent()) {
+
+            return new BoardDto();
+        }
+
+        BoardDto boardDto = new BoardDto(board.get(), convertList);
 
         return boardDto;
     }
@@ -40,30 +48,31 @@ public class BoardService {
     }
 
     public boolean delete(BoardDto boardDto) {
-        try {
-            Optional<Board> board = Optional.ofNullable(this.boardRepository.findById(boardDto.getId()).orElse(null));
-            Board deleteBoard = board.get();
-            deleteBoard.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
-            this.boardRepository.save(deleteBoard);
+        Optional<Board> board = this.boardRepository.findById(boardDto.getId());
 
-            return true;
-        } catch (Exception e) {
+        if (!board.isPresent()) {
 
             return false;
         }
+
+        board.get().setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+        this.boardRepository.save(board.get());
+
+        return true;
     }
 
     public boolean update(BoardDto boardDto) {
-        boardDto.setCreatedAt(this.boardRepository.findById(boardDto.getId()).get().getCreatedAt());
-        Board board = new Board(boardDto);
+        Optional<Board> board = this.boardRepository.findById(boardDto.getId());
 
-        try {
-            this.boardRepository.save(board);
-
-            return true;
-        } catch (Exception e) {
+        if (!board.isPresent()) {
 
             return false;
         }
+
+        boardDto.setCreatedAt(board.get().getCreatedAt());
+        Board updateBoard = new Board(boardDto);
+        this.boardRepository.save(updateBoard);
+
+        return true;
     }
 }

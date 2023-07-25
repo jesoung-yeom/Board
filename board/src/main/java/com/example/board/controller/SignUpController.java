@@ -21,17 +21,8 @@ public class SignUpController {
     }
 
     @PostMapping("/signup")
-    public String signup(HttpSession session, AccountDto accountDto, Model model) {
-        if (this.signUpService.signUp(accountDto)) {
-            session.setAttribute("user-id", accountDto.getUserId());
-
-            return "redirect:/home";
-        } else {
-            model.addAttribute("message", "생성오류");
-            model.addAttribute("replaceUrl", "/signup");
-
-            return "alert";
-        }
+    public void signup(AccountDto accountDto) {
+        this.signUpService.signUp(accountDto);
     }
 }
 

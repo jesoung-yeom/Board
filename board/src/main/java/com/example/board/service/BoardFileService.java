@@ -19,10 +19,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,15 +36,24 @@ public class BoardFileService {
             List<AttachFile> attachFileList = this.setAttachFileList(uploadFileDto);
 
             this.attachFileRepository.saveAll(attachFileList);
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public List<PreviewAttachFileDto> getPreviewAttachFileList(BoardDto boardDto) {
-        List<AttachFile> attachList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
+        Optional<List<AttachFile>> attachList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
+
+        if (!attachList.isPresent()) {
+
+            return Collections.emptyList();
+        }
+
         List<PreviewAttachFileDto> previewList = new ArrayList<>();
-        for (AttachFile attachFile : attachList) {
+
+        for (AttachFile attachFile : attachList.get()) {
             PreviewAttachFileDto previewAttachFileDto = new PreviewAttachFileDto(attachFile);
             previewList.add(previewAttachFileDto);
         }
@@ -60,106 +66,115 @@ public class BoardFileService {
         try {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-
-            return "";
         }
     }
 
     public DownloadFileDto downloadFile(PreviewAttachFileDto previewAttachFileDto) {
-        Optional<AttachFile> attachFile = Optional.ofNullable(this.attachFileRepository.findById(previewAttachFileDto.getAttachFileId()).orElse(null));
-        try {
-            DownloadFileDto downloadFileDto = new DownloadFileDto(attachFile.get());
-            return downloadFileDto;
-        } catch (IOException e) {
+        Optional<AttachFile> attachFile = this.attachFileRepository.findById(previewAttachFileDto.getAttachFileId());
 
-            throw new RuntimeException(e);
+        if (!attachFile.isPresent()) {
+
+            return new DownloadFileDto();
         }
+
+        DownloadFileDto downloadFileDto = new DownloadFileDto(attachFile.get());
+
+        return downloadFileDto;
+
     }
 
     public boolean create(BoardDto boardDto) {
-        ArrayList<AttachFile> attachFileList = convertToBoardFile(boardDto);
-        try {
-            if (!attachFileList.isEmpty()) {
-                this.attachFileRepository.saveAll(attachFileList);
+        List<AttachFile> attachFileList = convertToBoardFile(boardDto);
 
-                return true;
-            }
-        } catch (Exception e) {
+        if (!attachFileList.isEmpty()) {
+            this.attachFileRepository.saveAll(attachFileList);
 
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public boolean update(BoardDto boardDto) {
         List<AttachFile> attachFileList = convertToBoardFile(boardDto);
+        Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.board.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
 
-        List<AttachFile> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.board.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
-        List<AttachFile> resultAttachFileList = new ArrayList<>();
+        if (!existAttachFileList.isPresent()) {
 
-        for (AttachFile attachFile : existAttachFileList) {
-            attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+            return true;
         }
 
+        List<AttachFile> resultAttachFileList = new ArrayList<>();
+
+        for (AttachFile attachFile : existAttachFileList.get()) {
+            attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+        }
 
         if (attachFileList.size() > 0 && attachFileList.get(0).getFileName() != null) {
             resultAttachFileList.addAll(attachFileList);
         }
+        this.attachFileRepository.saveAll(resultAttachFileList);
 
-        try {
-
-            this.attachFileRepository.saveAll(resultAttachFileList);
-
-            return true;
-        } catch (Exception e) {
-
-            return false;
-        }
+        return true;
     }
 
     public boolean fileUpdate(UploadFileDto uploadFileDto) {
         if (uploadFileDto.getAttachFileList() != null) {
-            List<AttachFile> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(uploadFileDto.getBoardId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
-            List<AttachFile> resultAttachFileList = new ArrayList<>();
+            Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(uploadFileDto.getBoardId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
 
+            if (!existAttachFileList.isPresent()) {
+
+                return true;
+            }
+
+            List<AttachFile> resultAttachFileList = new ArrayList<>();
             List<AttachFile> attachFileList = this.setAttachFileList(uploadFileDto);
 
-            for (AttachFile attachFile : existAttachFileList) {
+            for (AttachFile attachFile : existAttachFileList.get()) {
                 attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
             }
 
-            resultAttachFileList.addAll(existAttachFileList);
+            resultAttachFileList.addAll(existAttachFileList.get());
 
             if (attachFileList.size() > 0 && attachFileList.get(0).getFileName().isEmpty() != true) {
                 resultAttachFileList.addAll(attachFileList);
             }
-
             this.attachFileRepository.saveAll(resultAttachFileList);
 
+            return true;
         }
+
         return true;
     }
 
     public boolean delete(BoardDto boardDto) {
-        try {
-            List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardIdAndDeleted(boardDto.getId(), EConstant.EDeletionStatus.exist.getStatus());
-            for (AttachFile attachFile : attachFileList) {
-                attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
-            }
-            this.attachFileRepository.saveAll(attachFileList);
+        Optional<List<AttachFile>> attachFileList = this.attachFileRepository.findAllByBoardIdAndDeleted(boardDto.getId(), EConstant.EDeletionStatus.exist.getStatus());
+
+        if (!attachFileList.isPresent()) {
 
             return true;
-        } catch (Exception e) {
-
-            return false;
         }
+
+        for (AttachFile attachFile : attachFileList.get()) {
+            attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+        }
+
+        this.attachFileRepository.saveAll(attachFileList.get());
+
+        return true;
     }
 
-    public ArrayList<String> convertToBase64(BoardDto boardDto) {
-        List<AttachFile> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.board.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
-        ArrayList<String> convertList = new ArrayList<>();
-        for (AttachFile attachFile : attachFileList) {
+    public List<String> convertToBase64(BoardDto boardDto) {
+        Optional<List<AttachFile>> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.board.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
+
+        if (!attachFileList.isPresent()) {
+
+            return Collections.emptyList();
+        }
+
+        List<String> convertList = new ArrayList<>();
+
+        for (AttachFile attachFile : attachFileList.get()) {
             try {
                 File file = new File(attachFile.getFilePath());
                 FileInputStream fis = new FileInputStream(file);
@@ -169,7 +184,7 @@ public class BoardFileService {
                 convertList.add("data:image/" + attachFile.getFileExtension() + ";base64," + Base64.getEncoder().encodeToString(imageBytes));
             } catch (IOException e) {
 
-                return null;
+                return Collections.emptyList();
             }
         }
 
@@ -180,6 +195,7 @@ public class BoardFileService {
         List<AttachFile> boarFileList = new ArrayList<AttachFile>();
         Document doc = Jsoup.parse(boardDto.getContent());
         Elements imgTags = doc.select("img");
+
         for (Element imgTag : imgTags) {
             String base64Data = imgTag.attr("src");
             String base64Image = base64Data.split(",")[1];
@@ -189,6 +205,7 @@ public class BoardFileService {
             String fileExtension = mimeType.split("/")[1];
             String style = imgTag.attr("style");
             byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+
             try {
                 ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
                 BufferedImage bufferedImage = ImageIO.read(bis);
@@ -200,7 +217,7 @@ public class BoardFileService {
                 bis.close();
             } catch (IOException e) {
 
-                return null;
+                return Collections.emptyList();
             }
         }
 
@@ -210,6 +227,7 @@ public class BoardFileService {
     public List<AttachFile> setAttachFileList(UploadFileDto uploadFileDto) {
         List<MultipartFile> uploadFileList = uploadFileDto.getAttachFileList();
         List<AttachFile> attachFileList = new ArrayList<AttachFile>();
+
         for (MultipartFile multipartFile : uploadFileList) {
             Path filepath = Path.of(localPath, multipartFile.getOriginalFilename());
             AttachFileDto attachFileDto = new AttachFileDto(uploadFileDto, multipartFile, filepath.toString());

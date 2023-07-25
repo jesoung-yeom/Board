@@ -18,9 +18,12 @@ public class DownloadFileDto {
 
     private Long fileSize;
 
-    public DownloadFileDto(AttachFile attachFile) throws IOException {
-        this.fileName = attachFile.getFileName();
-        this.file = FileUtils.readFileToByteArray(new File(attachFile.getFilePath()));
-        this.fileSize = attachFile.getFileSize();
+    public DownloadFileDto(AttachFile attachFile) {
+        try {
+            this.fileName = attachFile.getFileName();
+            this.file = FileUtils.readFileToByteArray(new File(attachFile.getFilePath()));
+            this.fileSize = attachFile.getFileSize();
+        } catch (IOException e) {
+        }
     }
 }
