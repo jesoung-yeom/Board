@@ -8,7 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,7 +28,7 @@ public class BoardDto {
 
     private String deleted;
 
-    public BoardDto(Board board, ArrayList<String> convertList) {
+    public BoardDto(Board board, List<String> convertList) {
         this.id = board.getId();
         this.title = board.getTitle();
         this.userId = board.getUserId();
@@ -53,7 +53,7 @@ public class BoardDto {
         }
     }
 
-    public String combineContent(String content, ArrayList<String> convertList) {
+    public String combineContent(String content, List<String> convertList) {
         Document doc = Jsoup.parse(content);
         Elements images = doc.select("img");
         for (int i = 0; i < images.size(); i++) {

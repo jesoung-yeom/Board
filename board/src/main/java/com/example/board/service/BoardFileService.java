@@ -176,8 +176,8 @@ public class BoardFileService {
         return convertList;
     }
 
-    public ArrayList<AttachFile> convertToBoardFile(BoardDto boardDto) {
-        ArrayList<AttachFile> boarFileList = new ArrayList<AttachFile>();
+    public List<AttachFile> convertToBoardFile(BoardDto boardDto) {
+        List<AttachFile> boarFileList = new ArrayList<AttachFile>();
         Document doc = Jsoup.parse(boardDto.getContent());
         Elements imgTags = doc.select("img");
         for (Element imgTag : imgTags) {

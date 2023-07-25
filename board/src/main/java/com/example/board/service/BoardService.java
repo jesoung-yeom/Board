@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,9 +19,9 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public BoardDto findById(Long id, ArrayList<String> convertList) {
         Board board = this.boardRepository.findById(id).orElse(null);
         BoardDto boardDto = new BoardDto(board, convertList);
+    public BoardDto findById(Long id, List<String> convertList) {
 
         return boardDto;
     }
