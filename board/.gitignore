@@ -45,5 +45,3 @@ out/
 
 ### css ###
 !**/src/main/resources/static/sass/css/
-
-/src/
