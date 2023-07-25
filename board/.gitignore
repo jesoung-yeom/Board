@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+application-sensitive.properties
 .idea
 .idea/
 *.iws
@@ -37,7 +38,12 @@ out/
 ### VS Code ###
 .vscode/
 
-### DS Store & idea
+### DS Store & idea ###
 *.DS_Store
 *.idea
 *.map
+
+### css ###
+!**/src/main/resources/static/sass/css/
+
+/src/
