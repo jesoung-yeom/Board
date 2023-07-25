@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.factory.AttachFileFactory;
 import com.example.board.global.EConstant;
 import com.example.board.model.AttachFile;
 import com.example.board.model.dto.*;
@@ -55,7 +56,7 @@ public class BoardFileService {
         List<PreviewAttachFileDto> previewList = new ArrayList<>();
 
         for (AttachFile attachFile : attachList.get()) {
-            PreviewAttachFileDto previewAttachFileDto = new PreviewAttachFileDto(attachFile);
+            PreviewAttachFileDto previewAttachFileDto = AttachFileFactory.convertPreviewAttachFileDto(attachFile);
             previewList.add(previewAttachFileDto);
         }
 
@@ -80,7 +81,7 @@ public class BoardFileService {
             return new DownloadFileDto();
         }
 
-        DownloadFileDto downloadFileDto = new DownloadFileDto(attachFile.get());
+        DownloadFileDto downloadFileDto = AttachFileFactory.convertDownloadFileDto(attachFile.get());
 
         return downloadFileDto;
 
@@ -217,7 +218,7 @@ public class BoardFileService {
                 String filePath = localPath + fileName;
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
                 ImageIO.write(bufferedImage, fileExtension, bos);
-                AttachFile attachFile = new AttachFile(boardDto, fileName, imageBytes.length, filePath, fileExtension);
+                AttachFile attachFile = AttachFileFactory.convertAttachFile(boardDto, fileName, imageBytes.length, filePath, fileExtension);
                 boarFileList.add(attachFile);
                 bis.close();
             } catch (IOException e) {
@@ -236,8 +237,8 @@ public class BoardFileService {
 
         for (MultipartFile multipartFile : uploadFileList) {
             Path filepath = Path.of(localPath, multipartFile.getOriginalFilename());
-            AttachFileDto attachFileDto = new AttachFileDto(uploadFileDto, multipartFile, filepath.toString());
-            AttachFile attachFile = new AttachFile(attachFileDto);
+            AttachFileDto attachFileDto = AttachFileFactory.convertAttachFileDto(uploadFileDto, multipartFile, filepath.toString());
+            AttachFile attachFile = AttachFileFactory.convertAttachFile(attachFileDto);
             this.saveFile(multipartFile, filepath);
             attachFileList.add(attachFile);
         }

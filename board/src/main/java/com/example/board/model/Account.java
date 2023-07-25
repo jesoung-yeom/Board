@@ -1,6 +1,5 @@
 package com.example.board.model;
 
-import com.example.board.model.dto.AccountDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,12 +28,5 @@ public class Account {
 
     @Column(name = "name")
     private String userName;
-
-    public Account(AccountDto accountDto) {
-        this.setUserId(accountDto.getUserId());
-        this.setUserPw(accountDto.getUserPw());
-        this.setUserEmail(accountDto.getUserEmail());
-        this.setUserName(accountDto.getUserName());
-    }
 
 }

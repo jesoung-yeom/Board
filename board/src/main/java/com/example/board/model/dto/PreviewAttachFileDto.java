@@ -1,11 +1,14 @@
 package com.example.board.model.dto;
 
-import com.example.board.model.AttachFile;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PreviewAttachFileDto {
 
     private Long attachFileId;
@@ -14,9 +17,4 @@ public class PreviewAttachFileDto {
 
     private String fileName;
 
-    public PreviewAttachFileDto(AttachFile attachFile) {
-        this.attachFileId = attachFile.getId();
-        this.boardId = attachFile.getBoardId();
-        this.fileName = attachFile.getFileName();
-    }
 }

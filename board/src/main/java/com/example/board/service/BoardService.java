@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.factory.BoardFactory;
 import com.example.board.global.EConstant;
 import com.example.board.model.Board;
 import com.example.board.model.dto.BoardDto;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,27 +25,27 @@ public class BoardService {
 
     public BoardDto findById(Long id, List<String> convertList) {
         Optional<Board> board = this.boardRepository.findById(id);
-        
+
         if (!board.isPresent()) {
             log.error("Can't find board");
 
             return new BoardDto();
         }
 
-        BoardDto boardDto = new BoardDto(board.get(), convertList);
+        BoardDto boardDto = BoardFactory.convertBoardDto(board.get(), convertList);
 
         return boardDto;
     }
 
     public Page<BoardDto> findAll(Pageable pageable) {
         Page<Board> boardPage = this.boardRepository.findAllByDeleted(EConstant.EDeletionStatus.exist.getStatus(), pageable);
-        Page<BoardDto> boardPageDto = boardPage.map(m -> new BoardDto(m));
+        Page<BoardDto> boardPageDto = boardPage.map(m -> BoardFactory.convertBoardDto(m));
 
         return boardPageDto;
     }
 
     public Board create(BoardDto boardDto) {
-        Board board = new Board(boardDto);
+        Board board = BoardFactory.convertBoard(boardDto);
 
         return this.boardRepository.save(board);
     }
@@ -73,7 +75,8 @@ public class BoardService {
         }
 
         boardDto.setCreatedAt(board.get().getCreatedAt());
-        Board updateBoard = new Board(boardDto);
+        Board updateBoard = BoardFactory.convertBoard(boardDto);
+        updateBoard.setUpdatedAt(LocalDateTime.now());
         this.boardRepository.save(updateBoard);
 
         return true;

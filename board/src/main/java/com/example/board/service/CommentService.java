@@ -1,5 +1,6 @@
 package com.example.board.service;
 
+import com.example.board.factory.CommentFactory;
 import com.example.board.global.EConstant;
 import com.example.board.model.Comment;
 import com.example.board.model.dto.CommentDto;
@@ -21,7 +22,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     public Comment create(CommentDto commentDto) {
-        Comment comment = new Comment(commentDto);
+        Comment comment = CommentFactory.convertComment(commentDto);
 
         return this.commentRepository.save(comment);
     }
@@ -41,7 +42,7 @@ public class CommentService {
 
 
     public boolean update(CommentDto commentDto) {
-        Comment comment = new Comment(commentDto);
+        Comment comment = CommentFactory.convertComment(commentDto);
         if (this.commentRepository.save(comment) != null) {
             log.error("Can't update comment");
 
@@ -61,7 +62,7 @@ public class CommentService {
         List<CommentDto> commentDtoList = new ArrayList<>();
 
         for (Comment comment : commentList.get()) {
-            CommentDto commentDto = new CommentDto(comment);
+            CommentDto commentDto = CommentFactory.convertCommentDto(comment);
             commentDtoList.add(commentDto);
         }
 
