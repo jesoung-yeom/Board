@@ -22,13 +22,13 @@ class SignUp {
         this.signUpForm = document.getElementById("signup-form");
 
         this.signInButton.addEventListener("click", this.signIn);
-
         this.signUpButton.addEventListener("click", this.submitDeleteForm);
     }
 
     submitDeleteForm = (event) => {
         event.preventDefault();
         const errorMessage = this.checkSignUp();
+
         if (this.resultSignUp(errorMessage)) {
             this.signUpForm.action = "/signup";
             this.signUpForm.method = "POST";
@@ -43,6 +43,7 @@ class SignUp {
     checkSignUp = () => {
 
         let msg = "";
+
         if (this.userName.value === "") {
             msg = "이름이 작성되지 않았습니다.";
         } else if (this.userId.value === "") {
@@ -65,6 +66,7 @@ class SignUp {
 
             return true;
         }
+
         alert(msg);
 
         return false;

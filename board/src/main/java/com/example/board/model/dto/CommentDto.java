@@ -30,6 +30,7 @@ public class CommentDto {
         this.userId = comment.getUserId();
         this.contentOfComment = comment.getContentOfComment();
         this.createdAt = comment.getCreatedAt();
+
         if (comment.getUpdatedAt() != null) {
             this.updatedAt = comment.getUpdatedAt();
         }

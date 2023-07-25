@@ -67,6 +67,7 @@ class BoardUpdate {
 
     submitUpdateForm = () => {
         event.preventDefault();
+
         if (this.checkEdit()) {
             this.updateForm.action = "/home/board/update";
             this.updateForm.method = "POST";

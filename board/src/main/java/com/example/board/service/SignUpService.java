@@ -14,6 +14,7 @@ public class SignUpService {
 
     public boolean signUp(AccountDto accountDto) {
         Account account = new Account(accountDto);
+
         if (this.accountRepository.findByUserId(accountDto.getUserId()) == null) {
             this.accountRepository.save(account);
 

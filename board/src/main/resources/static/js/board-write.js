@@ -70,6 +70,7 @@ class BoardWrite {
 
     logout = (event) => {
         event.preventDefault();
+
         if (this.checkConfirm("로그아웃하시겠습니까?")) {
             window.location.href = "/signout";
         }
@@ -78,6 +79,7 @@ class BoardWrite {
     checkConfirm = (msg) => {
         event.preventDefault();
         const confirmed = confirm(msg);
+
         if (confirmed) {
 
             return true;
@@ -89,6 +91,7 @@ class BoardWrite {
     submitCreateForm = (event) => {
         event.preventDefault();
         const check = this.checkWrite();
+
         if (check === "") {
             if (this.checkConfirm("작성하시겠습니까?")) {
                 this.createForm.action = "/home/board/create";
@@ -102,12 +105,14 @@ class BoardWrite {
     }
     cancel = (event) => {
         event.preventDefault();
+
         if (this.checkConfirm("작성을 취소하시겠습니까?")) {
             window.location.href = "/home";
         }
     }
     checkWrite = () => {
         let msg = "";
+
         if (this.title.value.trim() === '') {
             msg = "빈 제목으로 작성하실 수 없습니다.";
         } else if (this.content.value.trim() === '') {
@@ -129,8 +134,9 @@ class BoardWrite {
                 alert("파일 크기가 제한을 초과하였습니다. 500MB 이하의 파일만 업로드할 수 있습니다.");
                 this.fileInput.value = null; // 파일 선택 해제
 
-                return false; // 업로드 막기
+                return false;
             }
+
             const listItem = document.createElement("li");
             listItem.textContent = file.name;
 
@@ -141,6 +147,7 @@ class BoardWrite {
     limitTitleLength = () => {
         const titleLength = this.title.value.length;
         const maxLength = parseInt(this.title.getAttribute("maxlength"));
+
         if (titleLength >= maxLength) {
             this.title.value = this.title.value.slice(0, maxLength - 1);
             alert("제목의 글자 수는 " + maxLength + "자를 넘길 수 없습니다.")

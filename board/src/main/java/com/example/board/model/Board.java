@@ -46,15 +46,19 @@ public class Board {
         if (boardDto.getId() != null) {
             this.id = boardDto.getId();
         }
+
         this.title = boardDto.getTitle();
         this.content = extractContent(boardDto.getContent());
+
         if (this.createdAt != null) {
             this.createdAt = boardDto.getCreatedAt();
         } else {
             this.createdAt = LocalDateTime.now();
         }
+
         this.userId = boardDto.getUserId();
         this.deleted = EConstant.EDeletionStatus.exist.getStatus();
+
         if (boardDto.getUpdatedAt() != null) {
             this.updatedAt = boardDto.getUpdatedAt();
         }
@@ -63,8 +67,10 @@ public class Board {
     public String extractContent(String content) {
         Document doc = Jsoup.parse(content);
         Elements images = doc.select("img");
+
         for (int i = 0; i < images.size(); i++) {
             images.get(i).attr("src", "[image-" + i + "]");
+        }
 
         return doc.toString();
     }

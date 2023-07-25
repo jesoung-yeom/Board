@@ -44,15 +44,19 @@ public class Comment {
         if (commentDto.getId() != null) {
             this.id = commentDto.getId();
         }
+
         this.boardId = commentDto.getBoardId();
         this.userId = commentDto.getUserId();
         this.contentOfComment = commentDto.getContentOfComment();
+
         if (commentDto.getCreatedAt() != null) {
             this.createdAt = commentDto.getCreatedAt();
         } else {
             this.createdAt = LocalDateTime.now();
         }
+
         this.deleted = EConstant.EDeletionStatus.exist.getStatus();
+
         if (commentDto.getUpdatedAt() != null) {
             this.updatedAt = commentDto.getUpdatedAt();
         }

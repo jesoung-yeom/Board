@@ -19,6 +19,7 @@ class SignIn {
 
     submitSignInForm = (event) => {
         event.preventDefault();
+
         if (this.checkSignIn()) {
             this.signInForm.action = "/signin";
             this.signInForm.method = "POST";
