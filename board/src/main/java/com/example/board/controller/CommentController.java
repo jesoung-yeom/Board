@@ -1,6 +1,7 @@
 package com.example.board.controller;
 
 import com.example.board.model.dto.CommentDto;
+import com.example.board.model.dto.ResponseDto;
 import com.example.board.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -19,34 +20,44 @@ public class CommentController {
     @PostMapping("/create")
     public String createComment(HttpSession session, CommentDto commentDto, Model model) {
         commentDto.setUserId(session.getAttribute("user-id").toString());
-        this.commentService.create(commentDto);
+        ResponseDto createResponse = this.commentService.create(commentDto);
+        if (!createResponse.getSuccess()) {
+            model.addAttribute("message", "생성오류");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
 
         return "redirect:/home/board?id=" + commentDto.getBoardId();
     }
 
     @PostMapping("/delete")
     public String deleteComment(CommentDto commentDto, Model model) {
-        if (this.commentService.delete(commentDto.getId())) {
+        ResponseDto commentDeleteResponse = this.commentService.delete(commentDto.getId());
 
-            return "redirect:/home/board?id=" + commentDto.getBoardId();
-        } else {
+        if (!commentDeleteResponse.getSuccess()) {
             model.addAttribute("message", "삭제오류");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
+
         }
+
+        return "redirect:/home/board?id=" + commentDto.getBoardId();
     }
 
     @PostMapping("/update")
     public String updateComment(CommentDto commentDto, Model model) {
+        ResponseDto commentUpdateResponse = this.commentService.update(commentDto);
 
-        if (this.commentService.update(commentDto)) {
-            return "redirect:/home/board?id=" + commentDto.getBoardId();
-        } else {
+        if (!commentUpdateResponse.getSuccess()) {
             model.addAttribute("message", "수정오류");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
+
         }
+
+        return "redirect:/home/board?id=" + commentDto.getBoardId();
     }
 }

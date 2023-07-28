@@ -8,8 +8,10 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 public class AttachFileFactory {
@@ -65,8 +67,16 @@ public class AttachFileFactory {
                     .build();
 
             return downloadFileDto;
+        } catch (FileNotFoundException e) {
+            log.error("Occurred FileNotFoundException during download file");
+
+            return new DownloadFileDto();
         } catch (IOException e) {
-            log.error("Occurred IOException during file conversion");
+            log.error("Occurred IOException during download file");
+
+            return new DownloadFileDto();
+        } catch (Exception e) {
+            log.error("Occurred UnknownException during download file");
 
             return new DownloadFileDto();
         }
@@ -80,5 +90,13 @@ public class AttachFileFactory {
                 .build();
 
         return previewAttachFileDto;
+    }
+
+    public static FileSeparationDto convertFileSeparationDto(List<AttachFile> attachFileList, List<AttachFileDto> attachFileDtoList) {
+        FileSeparationDto fileSeparationDto = FileSeparationDto.builder()
+                .attachFileList(attachFileList)
+                .attachFileDtoList(attachFileDtoList)
+                .build();
+        return fileSeparationDto;
     }
 }

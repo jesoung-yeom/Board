@@ -2,9 +2,11 @@ package com.example.board.service;
 
 import com.example.board.factory.AttachFileFactory;
 import com.example.board.global.EConstant;
+import com.example.board.global.EResponse;
 import com.example.board.model.AttachFile;
 import com.example.board.model.dto.*;
 import com.example.board.repository.AttachFileRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -13,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,17 +37,27 @@ public class BoardFileService {
     @Value("${storage.path}")
     private String localPath;
 
-    public boolean fileAttach(UploadFileDto uploadFileDto) {
-        if (uploadFileDto.getAttachFileList().get(0).getSize() != 0) {
-            List<AttachFile> attachFileList = this.setAttachFileList(uploadFileDto);
+    @Transactional
+    public ResponseDto fileAttach(List<AttachFile> attachFileList) {
+        EResponse.EResponseValue response = EResponse.EResponseValue.OK;
+
+        try {
             this.attachFileRepository.saveAll(attachFileList);
+        } catch (CannotGetJdbcConnectionException e) {
+            log.error("Occurred CannotGetJdbcConnectionException during attach file");
+            response = EResponse.EResponseValue.CNGJCE;
+        } catch (DataAccessException e) {
+            log.error("Occurred DataAccessException during attach file");
+            response = EResponse.EResponseValue.DAE;
+        } catch (Exception e) {
+            log.error("Occurred UnknownException during attach file");
+            response = EResponse.EResponseValue.UNE;
+        } finally {
 
-            return true;
+            return new ResponseDto(response);
         }
-        log.error("Fail save all");
-
-        return false;
     }
+
 
     public List<PreviewAttachFileDto> getPreviewAttachFileList(BoardDto boardDto) {
         Optional<List<AttachFile>> attachList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
@@ -64,14 +77,30 @@ public class BoardFileService {
         return previewList;
     }
 
+    @Transactional
+    public ResponseDto saveFile(List<AttachFileDto> attachFileDtoList) {
+        EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
-    public void saveFile(MultipartFile file, Path filePath) {
         try {
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            for (AttachFileDto attachFileDto : attachFileDtoList) {
+                Path filepath = Path.of(localPath, attachFileDto.getMultipartFile().getOriginalFilename());
+                Files.copy(attachFileDto.getMultipartFile().getInputStream(), filepath, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (FileNotFoundException e) {
+            log.error("Occurred FileNotFoundException during save file");
+            response = EResponse.EResponseValue.FNFE;
         } catch (IOException e) {
             log.error("Occurred IOException during save file");
+            response = EResponse.EResponseValue.IOE;
+        } catch (Exception e) {
+            log.error("Unknown Exception");
+            response = EResponse.EResponseValue.UNE;
+        } finally {
+
+            return new ResponseDto(response);
         }
     }
+
 
     public DownloadFileDto downloadFile(PreviewAttachFileDto previewAttachFileDto) {
         Optional<AttachFile> attachFile = this.attachFileRepository.findById(previewAttachFileDto.getAttachFileId());
@@ -88,27 +117,40 @@ public class BoardFileService {
 
     }
 
-    public boolean create(BoardDto boardDto) {
+    @Transactional
+    public ResponseDto create(BoardDto boardDto) {
         List<AttachFile> attachFileList = convertToBoardFile(boardDto);
+        EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
-        if (!attachFileList.isEmpty()) {
-            this.attachFileRepository.saveAll(attachFileList);
+        if (attachFileList.isEmpty()) {
+            log.info("empty list");
+            response = EResponse.EResponseValue.ETL;
 
-            return true;
+            return new ResponseDto(response);
         }
-        log.error("Fail Create");
 
-        return false;
+        try {
+            this.attachFileRepository.saveAll(attachFileList);
+        } catch (CannotGetJdbcConnectionException e) {
+            log.error("Occurred CannotGetJdbcConnectionException during create file");
+            response = EResponse.EResponseValue.CNGJCE;
+        } catch (DataAccessException e) {
+            log.error("Occurred DataAccessException during create file");
+            response = EResponse.EResponseValue.DAE;
+        } catch (Exception e) {
+            log.error("Occurred UnknownException during create file");
+            response = EResponse.EResponseValue.UNE;
+        } finally {
+
+            return new ResponseDto(response);
+        }
     }
 
-    public boolean update(BoardDto boardDto) {
+    @Transactional
+    public ResponseDto update(BoardDto boardDto) {
         List<AttachFile> attachFileList = convertToBoardFile(boardDto);
         Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.board.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
-
-        if (!existAttachFileList.isPresent()) {
-
-            return true;
-        }
+        EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
         List<AttachFile> resultAttachFileList = new ArrayList<>();
 
@@ -116,63 +158,85 @@ public class BoardFileService {
             attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
         }
 
-        if (attachFileList.size() > 0 && attachFileList.get(0).getFileName() != null) {
+        if (!existAttachFileList.isPresent()) {
+            response = EResponse.EResponseValue.ETL;
+
+            return new ResponseDto(response);
+        }
+
+        if (!attachFileList.isEmpty()) {
             resultAttachFileList.addAll(attachFileList);
         }
 
         try {
             this.attachFileRepository.saveAll(resultAttachFileList);
+        } catch (CannotGetJdbcConnectionException e) {
+            log.error("Occurred CannotGetJdbcConnectionException during update file");
+            response = EResponse.EResponseValue.CNGJCE;
         } catch (DataAccessException e) {
-            log.error("Occurred DataAccessException during conversion");
+            log.error("Occurred DataAccessException during update file");
+            response = EResponse.EResponseValue.DAE;
+        } catch (Exception e) {
+            log.error("Occurred UnknownException during update file");
+            response = EResponse.EResponseValue.UNE;
+        } finally {
 
-            return false;
+            return new ResponseDto(response);
         }
-
-        return true;
     }
 
-    public boolean fileUpdate(UploadFileDto uploadFileDto) {
-        if (uploadFileDto.getAttachFileList() != null) {
-            Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(uploadFileDto.getBoardId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
+    @Transactional
+    public ResponseDto fileUpdate(UploadFileDto uploadFileDto, List<AttachFile> attachFileList) {
+        EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
-            if (!existAttachFileList.isPresent()) {
+        Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(uploadFileDto.getBoardId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
 
-                return true;
-            }
+        List<AttachFile> resultAttachFileList = new ArrayList<>();
 
-            List<AttachFile> resultAttachFileList = new ArrayList<>();
-            List<AttachFile> attachFileList = this.setAttachFileList(uploadFileDto);
-
-            for (AttachFile attachFile : existAttachFileList.get()) {
-                attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
-            }
-
-            resultAttachFileList.addAll(existAttachFileList.get());
-
-            if (attachFileList.size() > 0 && attachFileList.get(0).getFileName().isEmpty() != true) {
-                resultAttachFileList.addAll(attachFileList);
-            }
-
-            try {
-                this.attachFileRepository.saveAll(resultAttachFileList);
-            } catch (DataAccessException e) {
-                log.error("Occurred DataAccessException during conversion");
-
-                return false;
-            }
-
-            return true;
+        for (AttachFile attachFile : existAttachFileList.get()) {
+            attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
         }
 
-        return true;
+        if (!existAttachFileList.isPresent()) {
+            log.info("empty list");
+            response = EResponse.EResponseValue.ETL;
+
+            return new ResponseDto(response);
+        }
+
+        resultAttachFileList.addAll(existAttachFileList.get());
+
+        if (!attachFileList.isEmpty()) {
+            resultAttachFileList.addAll(attachFileList);
+        }
+
+        try {
+            this.attachFileRepository.saveAll(resultAttachFileList);
+        } catch (CannotGetJdbcConnectionException e) {
+            log.error("Occurred CannotGetJdbcConnectionException during update file");
+            response = EResponse.EResponseValue.CNGJCE;
+        } catch (DataAccessException e) {
+            log.error("Occurred DataAccessException during update file");
+            response = EResponse.EResponseValue.DAE;
+        } catch (Exception e) {
+            log.error("Occurred UnknownException during update file");
+            response = EResponse.EResponseValue.UNE;
+        } finally {
+
+            return new ResponseDto(response);
+        }
+
     }
 
-    public boolean delete(BoardDto boardDto) {
+    @Transactional
+    public ResponseDto delete(BoardDto boardDto) {
         Optional<List<AttachFile>> attachFileList = this.attachFileRepository.findAllByBoardIdAndDeleted(boardDto.getId(), EConstant.EDeletionStatus.exist.getStatus());
+        EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
         if (!attachFileList.isPresent()) {
+            response = EResponse.EResponseValue.ETL;
 
-            return true;
+            return new ResponseDto(response);
         }
 
         for (AttachFile attachFile : attachFileList.get()) {
@@ -181,13 +245,19 @@ public class BoardFileService {
 
         try {
             this.attachFileRepository.saveAll(attachFileList.get());
+        } catch (CannotGetJdbcConnectionException e) {
+            log.error("Occurred CannotGetJdbcConnectionException during delete file");
+            response = EResponse.EResponseValue.CNGJCE;
         } catch (DataAccessException e) {
-            log.error("Occurred DataAccessException during conversion");
+            log.error("Occurred DataAccessException during delete file");
+            response = EResponse.EResponseValue.DAE;
+        } catch (Exception e) {
+            log.error("Occurred UnknownException during delete file");
+            response = EResponse.EResponseValue.UNE;
+        } finally {
 
-            return false;
+            return new ResponseDto(response);
         }
-
-        return true;
     }
 
     public List<String> convertToBase64(BoardDto boardDto) {
@@ -208,8 +278,16 @@ public class BoardFileService {
                 fis.read(imageBytes);
                 fis.close();
                 convertList.add("data:image/" + attachFile.getFileExtension() + ";base64," + Base64.getEncoder().encodeToString(imageBytes));
+            } catch (FileNotFoundException e) {
+                log.error("Occurred FileNotFoundException during read file");
+
+                return Collections.emptyList();
             } catch (IOException e) {
                 log.error("Occurred IOException during conversion");
+
+                return Collections.emptyList();
+            } catch (Exception e) {
+                log.error("Occurred UnknownException");
 
                 return Collections.emptyList();
             }
@@ -219,7 +297,7 @@ public class BoardFileService {
     }
 
     public List<AttachFile> convertToBoardFile(BoardDto boardDto) {
-        List<AttachFile> boarFileList = new ArrayList<AttachFile>();
+        List<AttachFile> boardFileList = new ArrayList<AttachFile>();
         Document doc = Jsoup.parse(boardDto.getContent());
         Elements imgTags = doc.select("img");
 
@@ -240,7 +318,7 @@ public class BoardFileService {
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
                 ImageIO.write(bufferedImage, fileExtension, bos);
                 AttachFile attachFile = AttachFileFactory.convertAttachFile(boardDto, fileName, imageBytes.length, filePath, fileExtension);
-                boarFileList.add(attachFile);
+                boardFileList.add(attachFile);
                 bis.close();
             } catch (IOException e) {
                 log.error("Occurred IOException during conversion");
@@ -249,21 +327,29 @@ public class BoardFileService {
             }
         }
 
-        return boarFileList;
+        return boardFileList;
     }
 
-    public List<AttachFile> setAttachFileList(UploadFileDto uploadFileDto) {
+    public FileSeparationDto setAttachFileList(UploadFileDto uploadFileDto) {
         List<MultipartFile> uploadFileList = uploadFileDto.getAttachFileList();
         List<AttachFile> attachFileList = new ArrayList<AttachFile>();
+        List<AttachFileDto> attachFileDtoList = new ArrayList<>();
 
         for (MultipartFile multipartFile : uploadFileList) {
             Path filepath = Path.of(localPath, multipartFile.getOriginalFilename());
             AttachFileDto attachFileDto = AttachFileFactory.convertAttachFileDto(uploadFileDto, multipartFile, filepath.toString());
             AttachFile attachFile = AttachFileFactory.convertAttachFile(attachFileDto);
-            this.saveFile(multipartFile, filepath);
+
+            attachFileDtoList.add(attachFileDto);
             attachFileList.add(attachFile);
         }
 
-        return attachFileList;
+        Optional<FileSeparationDto> fileSeparationDto = Optional.ofNullable(AttachFileFactory.convertFileSeparationDto(attachFileList, attachFileDtoList));
+
+        if (!fileSeparationDto.isPresent()) {
+            return new FileSeparationDto();
+        }
+
+        return fileSeparationDto.get();
     }
 }

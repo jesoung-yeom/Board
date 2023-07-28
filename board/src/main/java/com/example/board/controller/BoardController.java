@@ -1,6 +1,8 @@
 package com.example.board.controller;
 
 import com.example.board.global.EConstant;
+import com.example.board.model.AttachFile;
+import com.example.board.model.Board;
 import com.example.board.model.dto.*;
 import com.example.board.service.BoardFileService;
 import com.example.board.service.BoardService;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -77,6 +80,7 @@ public class BoardController {
 
         if (ObjectUtils.isEmpty(downloadFileDto)) {
             log.error("Can't download");
+            //여기서 시도?
         }
 
         try {
@@ -87,8 +91,12 @@ public class BoardController {
             response.getOutputStream().write(downloadFileDto.getFile());
             response.getOutputStream().flush();
             response.getOutputStream().close();
+        } catch (FileNotFoundException e) {
+            log.error("Occurred FileNotFoundException during download");
         } catch (IOException e) {
             log.error("Occurred IOException during download");
+        } catch (Exception e) {
+            log.error("Occurred UnknownException during download");
         }
     }
 
@@ -116,54 +124,119 @@ public class BoardController {
     @PostMapping("/board/create")
     public String createBoard(HttpSession session, BoardDto boardDto, UploadFileDto uploadFileDto, Model model) {
         boardDto.setUserId(session.getAttribute("user-id").toString());
-        boardDto.setId(this.boardService.create(boardDto).getId());
+        Board board = this.boardService.create(boardDto);
+
+        if (ObjectUtils.isEmpty(board)) {
+            model.addAttribute("message", "생성오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
+
+        boardDto.setId(board.getId());
         uploadFileDto.setBoardId(boardDto.getId());
-        this.boardFileService.create(boardDto);
-        this.boardFileService.fileAttach(uploadFileDto);
+
+        ResponseDto createResponse = this.boardFileService.create(boardDto);
+
+        if (!createResponse.getSuccess()) {
+            model.addAttribute("message", "생성오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
+
+        FileSeparationDto fileSeparationDto = this.boardFileService.setAttachFileList(uploadFileDto);
+
+        if (ObjectUtils.isEmpty(fileSeparationDto)) {
+
+            return "redirect:/home";
+        }
+
+        List<AttachFile> attachFileList = fileSeparationDto.getAttachFileList();
+        List<AttachFileDto> attachFileDtoList = fileSeparationDto.getAttachFileDtoList();
+        ResponseDto fileSaveResponse = this.boardFileService.saveFile(attachFileDtoList);
+
+        if (!fileSaveResponse.getSuccess()) {
+            model.addAttribute("message", "생성오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
+
+        ResponseDto fileAttachResponse = this.boardFileService.fileAttach(attachFileList);
+
+        if (!fileAttachResponse.getSuccess()) {
+            model.addAttribute("message", "생성오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
 
         return "redirect:/home";
     }
 
     @PostMapping("/board/delete")
     public String deleteBoard(BoardDto boardDto, Model model) {
-        if (!this.boardService.delete(boardDto)) {
+        ResponseDto deleteResponse = this.boardService.delete(boardDto);
+
+        if (!deleteResponse.getSuccess()) {
             model.addAttribute("message", "삭제오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
         }
 
-        if (this.boardFileService.delete(boardDto)) {
+        ResponseDto fileDeleteResponse = this.boardFileService.delete(boardDto);
 
-            return "redirect:/home";
-        } else {
+        if (!fileDeleteResponse.getSuccess()) {
             model.addAttribute("message", "삭제오류가 발생하였습니다. 관리자에게 문의 바랍니다.");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
+
         }
+
+        return "redirect:/home";
     }
 
     @PostMapping("/board/update")
     public String updateBoard(HttpSession session, BoardDto boardDto, UploadFileDto uploadFileDto, Model model) {
         boardDto.setUserId(session.getAttribute("user-id").toString());
         uploadFileDto.setBoardId(boardDto.getId());
+        ResponseDto updateResponse = this.boardService.update(boardDto);
 
-        if (!this.boardService.update(boardDto)) {
+        if (!updateResponse.getSuccess()) {
             model.addAttribute("message", "수정오류");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
         }
 
-        if (!this.boardFileService.update(boardDto)) {
+        ResponseDto imageFileUpdateResponse = this.boardFileService.update(boardDto);
+
+        if (!imageFileUpdateResponse.getSuccess()) {
             model.addAttribute("message", "수정오류");
             model.addAttribute("replaceUrl", "/home");
 
             return "alert";
         }
 
-        if (!this.boardFileService.fileUpdate(uploadFileDto)) {
+        FileSeparationDto fileSeparationDto = this.boardFileService.setAttachFileList(uploadFileDto);
+        List<AttachFile> attachFileList = fileSeparationDto.getAttachFileList();
+        List<AttachFileDto> attachFileDtoList = fileSeparationDto.getAttachFileDtoList();
+
+        ResponseDto fileSaveResponseDto = this.boardFileService.saveFile(attachFileDtoList);
+
+        if (!fileSaveResponseDto.getSuccess()) {
+            model.addAttribute("message", "수정오류");
+            model.addAttribute("replaceUrl", "/home");
+
+            return "alert";
+        }
+
+        ResponseDto fileUpdateResponse = this.boardFileService.fileUpdate(uploadFileDto, attachFileList);
+
+        if (!fileUpdateResponse.getSuccess()) {
             model.addAttribute("message", "수정오류");
             model.addAttribute("replaceUrl", "/home");
 
