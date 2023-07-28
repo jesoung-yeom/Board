@@ -29,6 +29,7 @@ public class SignUpService {
 
                 return new ResponseDto(response);
             }
+            log.info("Already exist account");
             response = EResponse.EResponseValue.AEA;
 
             return new ResponseDto(response);
@@ -45,7 +46,6 @@ public class SignUpService {
             log.error("Occurred UnknownException during update");
             response = EResponse.EResponseValue.UNE;
         } finally {
-            log.info("Already exist account");
 
             return new ResponseDto(response);
         }
