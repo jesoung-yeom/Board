@@ -1,7 +1,7 @@
 package com.example.board.service;
 
 import com.example.board.factory.CommentFactory;
-import com.example.board.global.EConstant;
+import com.example.board.global.EBoard;
 import com.example.board.global.EResponse;
 import com.example.board.model.Comment;
 import com.example.board.model.dto.CommentDto;
@@ -57,7 +57,7 @@ public class CommentService {
 
         try {
             Optional<Comment> comment = this.commentRepository.findById(id);
-            comment.get().setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+            comment.get().setDeleted(EBoard.EDeletionStatus.DELETE.getStatus());
             this.commentRepository.save(comment.get());
         } catch (CannotGetJdbcConnectionException e) {
             log.error("Occurred CannotGetJdbcConnectionException during delete");
@@ -104,7 +104,7 @@ public class CommentService {
     }
 
     public List<CommentDto> findByBoardId(Long id) {
-        Optional<List<Comment>> commentList = this.commentRepository.findByBoardIdAndDeleted(id, EConstant.EDeletionStatus.exist.getStatus());
+        Optional<List<Comment>> commentList = this.commentRepository.findByBoardIdAndDeleted(id, EBoard.EDeletionStatus.EXIST.getStatus());
 
         if (!commentList.isPresent()) {
             return Collections.emptyList();

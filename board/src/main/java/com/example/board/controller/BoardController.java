@@ -1,6 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.global.EConstant;
+import com.example.board.global.EHome;
 import com.example.board.model.AttachFile;
 import com.example.board.model.Board;
 import com.example.board.model.dto.*;
@@ -40,7 +40,7 @@ public class BoardController {
     @GetMapping("")
     public String home(@RequestParam(defaultValue = "0") int page, HttpSession session, Model model) {
         if (session.getAttribute("user-id") != null) {
-            Pageable pageable = PageRequest.of(page, EConstant.EPage.page.getPageSize());
+            Pageable pageable = PageRequest.of(page, EHome.EPage.PAGE.getPAGESIZE());
             Page<BoardDto> boardDtoList = this.boardService.findAll(pageable);
             List<BoardDto> contents = boardDtoList.getContent();
             int totalPages = boardDtoList.getTotalPages();

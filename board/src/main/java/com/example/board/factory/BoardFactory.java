@@ -1,6 +1,6 @@
 package com.example.board.factory;
 
-import com.example.board.global.EConstant;
+import com.example.board.global.EBoard;
 import com.example.board.model.Board;
 import com.example.board.model.dto.BoardDto;
 import org.jsoup.Jsoup;
@@ -18,7 +18,7 @@ public class BoardFactory {
         board.setTitle(boardDto.getTitle())
                 .setContent(extractContent(boardDto.getContent()))
                 .setUserId(boardDto.getUserId())
-                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
+                .setDeleted(EBoard.EDeletionStatus.EXIST.getStatus());
 
         if (boardDto.getId() != null) {
             board.setId(boardDto.getId());

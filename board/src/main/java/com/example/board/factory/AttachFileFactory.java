@@ -1,6 +1,6 @@
 package com.example.board.factory;
 
-import com.example.board.global.EConstant;
+import com.example.board.global.EBoard;
 import com.example.board.model.AttachFile;
 import com.example.board.model.dto.*;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +20,12 @@ public class AttachFileFactory {
         AttachFile attachFile = new AttachFile();
         attachFile.setBoardId(attachFileDto.getBoardId())
                 .setFileName(attachFileDto.getMultipartFile().getOriginalFilename())
-                .setFileType(EConstant.EFileType.attach.getFileType())
+                .setFileType(EBoard.EFileType.ATTACH.getFileType())
                 .setFilePath(attachFileDto.getFilePath())
                 .setFileSize(attachFileDto.getMultipartFile().getSize())
                 .setFileExtension(extractFileExtension(attachFileDto.getMultipartFile().getOriginalFilename()))
                 .setUploadedAt(LocalDateTime.now())
-                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
+                .setDeleted(EBoard.EDeletionStatus.EXIST.getStatus());
 
         return attachFile;
     }
@@ -34,12 +34,12 @@ public class AttachFileFactory {
         AttachFile attachFile = new AttachFile();
         attachFile.setBoardId(boardDto.getId())
                 .setFileName(fileName)
-                .setFileType(EConstant.EFileType.board.getFileType())
+                .setFileType(EBoard.EFileType.BOARD.getFileType())
                 .setFilePath(filePath)
                 .setFileSize((long) fileSize)
                 .setFileExtension(fileExtension)
                 .setUploadedAt(LocalDateTime.now())
-                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
+                .setDeleted(EBoard.EDeletionStatus.EXIST.getStatus());
 
         return attachFile;
     }

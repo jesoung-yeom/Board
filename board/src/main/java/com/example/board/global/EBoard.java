@@ -1,23 +1,9 @@
 package com.example.board.global;
 
-public class EConstant {
-
-    public enum EPage {
-        page(10);
-
-        private int pageSize;
-
-        private EPage(int pageSize) {
-            this.pageSize = pageSize;
-        }
-
-        public int getPageSize() {
-            return pageSize;
-        }
-    }
+public class EBoard {
 
     public enum EFileType {
-        board("board"), attach("attach");
+        BOARD("board"), ATTACH("attach");
 
         private String type;
 
@@ -31,7 +17,7 @@ public class EConstant {
     }
 
     public enum EDeletionStatus {
-        exist("N"), delete("Y");
+        EXIST("N"), DELETE("Y");
 
         private String status;
 
@@ -43,4 +29,6 @@ public class EConstant {
             return this.status;
         }
     }
+
+
 }

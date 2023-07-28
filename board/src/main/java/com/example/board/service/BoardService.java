@@ -1,7 +1,7 @@
 package com.example.board.service;
 
 import com.example.board.factory.BoardFactory;
-import com.example.board.global.EConstant;
+import com.example.board.global.EBoard;
 import com.example.board.global.EResponse;
 import com.example.board.model.Board;
 import com.example.board.model.dto.BoardDto;
@@ -43,7 +43,7 @@ public class BoardService {
     }
 
     public Page<BoardDto> findAll(Pageable pageable) {
-        Page<Board> boardPage = this.boardRepository.findAllByDeleted(EConstant.EDeletionStatus.exist.getStatus(), pageable);
+        Page<Board> boardPage = this.boardRepository.findAllByDeleted(EBoard.EDeletionStatus.EXIST.getStatus(), pageable);
         Page<BoardDto> boardPageDto = boardPage.map(m -> BoardFactory.convertBoardDto(m));
 
         return boardPageDto;
@@ -79,7 +79,7 @@ public class BoardService {
             return new ResponseDto(response);
         }
 
-        board.get().setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+        board.get().setDeleted(EBoard.EDeletionStatus.DELETE.getStatus());
 
         try {
             this.boardRepository.save(board.get());

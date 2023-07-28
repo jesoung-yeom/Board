@@ -1,6 +1,6 @@
 package com.example.board.factory;
 
-import com.example.board.global.EConstant;
+import com.example.board.global.EBoard;
 import com.example.board.model.Comment;
 import com.example.board.model.dto.CommentDto;
 
@@ -12,7 +12,7 @@ public class CommentFactory {
         comment.setBoardId(commentDto.getBoardId())
                 .setUserId(commentDto.getUserId())
                 .setContentOfComment(commentDto.getContentOfComment())
-                .setDeleted(EConstant.EDeletionStatus.exist.getStatus());
+                .setDeleted(EBoard.EDeletionStatus.EXIST.getStatus());
 
         if (commentDto.getId() != null) {
             comment.setId(commentDto.getId());

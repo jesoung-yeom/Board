@@ -1,7 +1,7 @@
 package com.example.board.service;
 
 import com.example.board.factory.AttachFileFactory;
-import com.example.board.global.EConstant;
+import com.example.board.global.EBoard;
 import com.example.board.global.EResponse;
 import com.example.board.model.AttachFile;
 import com.example.board.model.dto.*;
@@ -60,7 +60,7 @@ public class BoardFileService {
 
 
     public List<PreviewAttachFileDto> getPreviewAttachFileList(BoardDto boardDto) {
-        Optional<List<AttachFile>> attachList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
+        Optional<List<AttachFile>> attachList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EBoard.EFileType.ATTACH.getFileType(), EBoard.EDeletionStatus.EXIST.getStatus());
 
         if (!attachList.isPresent()) {
 
@@ -149,13 +149,13 @@ public class BoardFileService {
     @Transactional
     public ResponseDto update(BoardDto boardDto) {
         List<AttachFile> attachFileList = convertToBoardFile(boardDto);
-        Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.board.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
+        Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EBoard.EFileType.BOARD.getFileType(), EBoard.EDeletionStatus.EXIST.getStatus());
         EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
         List<AttachFile> resultAttachFileList = new ArrayList<>();
 
         for (AttachFile attachFile : existAttachFileList.get()) {
-            attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+            attachFile.setDeleted(EBoard.EDeletionStatus.DELETE.getStatus());
         }
 
         if (!existAttachFileList.isPresent()) {
@@ -189,12 +189,12 @@ public class BoardFileService {
     public ResponseDto fileUpdate(UploadFileDto uploadFileDto, List<AttachFile> attachFileList) {
         EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
-        Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(uploadFileDto.getBoardId(), EConstant.EFileType.attach.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
+        Optional<List<AttachFile>> existAttachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(uploadFileDto.getBoardId(), EBoard.EFileType.ATTACH.getFileType(), EBoard.EDeletionStatus.EXIST.getStatus());
 
         List<AttachFile> resultAttachFileList = new ArrayList<>();
 
         for (AttachFile attachFile : existAttachFileList.get()) {
-            attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+            attachFile.setDeleted(EBoard.EDeletionStatus.DELETE.getStatus());
         }
 
         if (!existAttachFileList.isPresent()) {
@@ -230,7 +230,7 @@ public class BoardFileService {
 
     @Transactional
     public ResponseDto delete(BoardDto boardDto) {
-        Optional<List<AttachFile>> attachFileList = this.attachFileRepository.findAllByBoardIdAndDeleted(boardDto.getId(), EConstant.EDeletionStatus.exist.getStatus());
+        Optional<List<AttachFile>> attachFileList = this.attachFileRepository.findAllByBoardIdAndDeleted(boardDto.getId(), EBoard.EDeletionStatus.EXIST.getStatus());
         EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
         if (!attachFileList.isPresent()) {
@@ -240,7 +240,7 @@ public class BoardFileService {
         }
 
         for (AttachFile attachFile : attachFileList.get()) {
-            attachFile.setDeleted(EConstant.EDeletionStatus.delete.getStatus());
+            attachFile.setDeleted(EBoard.EDeletionStatus.DELETE.getStatus());
         }
 
         try {
@@ -261,7 +261,7 @@ public class BoardFileService {
     }
 
     public List<String> convertToBase64(BoardDto boardDto) {
-        Optional<List<AttachFile>> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EConstant.EFileType.board.getFileType(), EConstant.EDeletionStatus.exist.getStatus());
+        Optional<List<AttachFile>> attachFileList = this.attachFileRepository.findAllByBoardIdAndFileTypeAndDeleted(boardDto.getId(), EBoard.EFileType.BOARD.getFileType(), EBoard.EDeletionStatus.EXIST.getStatus());
 
         if (!attachFileList.isPresent()) {
 
