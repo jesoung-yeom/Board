@@ -4,8 +4,10 @@ public class EResponse {
 
     public enum EResponseValue {
 
-        OK(true, 000, "Success"),
+        OK(true, 000, "OK"),
         ETL(true, 001, "List is empty, but no problem"),
+        NMA(false, 002, "Not match account"),
+        AEA(false, 003, "Already exist account"),
         UNE(false, 101, "Occurred UnknownException"),
         IOE(false, 102, "Occurred IOException"),
         FNFE(false, 103, "Occurred FileNotFoundException"),

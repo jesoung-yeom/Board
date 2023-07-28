@@ -2,6 +2,7 @@ package com.example.board.controller;
 
 
 import com.example.board.model.dto.AccountDto;
+import com.example.board.model.dto.ResponseDto;
 import com.example.board.service.LoginService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -35,16 +36,18 @@ public class LoginController {
 
     @PostMapping("/signin")
     public String signIn(AccountDto accountDto, Model model, HttpSession session) {
-        if (loginService.signIn(accountDto)) {
-            session.setAttribute("user-id", accountDto.getUserId());
+        ResponseDto signInResponse = loginService.signIn(accountDto);
+    
 
-            return "redirect:/home";
+        if (!signInResponse.getSuccess()) {
+            model.addAttribute("message", "아이디와 비밀번호가 일치하지 않습니다.");
+            model.addAttribute("replaceUrl", "/");
+
+            return "alert";
         }
-        model.addAttribute("message", "아이디와 비밀번호가 일치하지 않습니다.");
-        model.addAttribute("replaceUrl", "/");
+        session.setAttribute("user-id", accountDto.getUserId());
 
-        return "alert";
-
+        return "redirect:/home";
     }
 
     @GetMapping("/signout")
