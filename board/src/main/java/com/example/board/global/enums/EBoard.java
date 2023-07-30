@@ -1,4 +1,4 @@
-package com.example.board.global;
+package com.example.board.global.enums;
 
 public class EBoard {
 
