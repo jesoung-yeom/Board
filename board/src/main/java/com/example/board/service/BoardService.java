@@ -1,11 +1,11 @@
 package com.example.board.service;
 
-import com.example.board.factory.BoardFactory;
-import com.example.board.global.EBoard;
-import com.example.board.global.EResponse;
+import com.example.board.global.enums.EBoard;
+import com.example.board.global.enums.EResponse;
 import com.example.board.model.Board;
 import com.example.board.model.dto.BoardDto;
 import com.example.board.model.dto.ResponseDto;
+import com.example.board.model.mapper.BoardMapper;
 import com.example.board.repository.BoardRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,21 +37,21 @@ public class BoardService {
             return new BoardDto();
         }
 
-        BoardDto boardDto = BoardFactory.convertBoardDto(board.get(), convertList);
+        BoardDto boardDto = BoardMapper.MAPPER.toBoardDto(board.get(), convertList);
 
         return boardDto;
     }
 
     public Page<BoardDto> findAll(Pageable pageable) {
         Page<Board> boardPage = this.boardRepository.findAllByDeleted(EBoard.EDeletionStatus.EXIST.getStatus(), pageable);
-        Page<BoardDto> boardPageDto = boardPage.map(m -> BoardFactory.convertBoardDto(m));
+        Page<BoardDto> boardPageDto = boardPage.map(m -> BoardMapper.MAPPER.toBoardDto(m));
 
         return boardPageDto;
     }
 
-    @Transactional
+
     public Board create(BoardDto boardDto) {
-        Board board = BoardFactory.convertBoard(boardDto);
+        Board board = BoardMapper.MAPPER.toBoard(boardDto);
 
         try {
             this.boardRepository.save(board);
@@ -63,7 +63,7 @@ public class BoardService {
             log.error("Occurred UnknownException during create");
         } finally {
 
-            return new Board();
+            return board;
         }
     }
 
@@ -111,7 +111,7 @@ public class BoardService {
         }
 
         boardDto.setCreatedAt(board.get().getCreatedAt());
-        Board updateBoard = BoardFactory.convertBoard(boardDto);
+        Board updateBoard = BoardMapper.MAPPER.toBoard(boardDto);
         updateBoard.setUpdatedAt(LocalDateTime.now());
 
         try {

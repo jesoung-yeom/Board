@@ -1,11 +1,11 @@
 package com.example.board.service;
 
-import com.example.board.factory.CommentFactory;
-import com.example.board.global.EBoard;
-import com.example.board.global.EResponse;
+import com.example.board.global.enums.EBoard;
+import com.example.board.global.enums.EResponse;
 import com.example.board.model.Comment;
 import com.example.board.model.dto.CommentDto;
 import com.example.board.model.dto.ResponseDto;
+import com.example.board.model.mapper.CommentMapper;
 import com.example.board.repository.CommentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class CommentService {
         EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
         try {
-            Comment comment = CommentFactory.convertComment(commentDto);
+            Comment comment = CommentMapper.MAPPER.toComment(commentDto);
             this.commentRepository.save(comment);
         } catch (CannotGetJdbcConnectionException e) {
             log.error("Occurred CannotGetJdbcConnectionException during create");
@@ -83,7 +83,7 @@ public class CommentService {
         EResponse.EResponseValue response = EResponse.EResponseValue.OK;
 
         try {
-            Comment comment = CommentFactory.convertComment(commentDto);
+            Comment comment = CommentMapper.MAPPER.toComment(commentDto);
             this.commentRepository.save(comment);
         } catch (CannotGetJdbcConnectionException e) {
             log.error("Occurred CannotGetJdbcConnectionException during update");
@@ -113,7 +113,7 @@ public class CommentService {
         List<CommentDto> commentDtoList = new ArrayList<>();
 
         for (Comment comment : commentList.get()) {
-            CommentDto commentDto = CommentFactory.convertCommentDto(comment);
+            CommentDto commentDto = CommentMapper.MAPPER.toCommentDto(comment);
             commentDtoList.add(commentDto);
         }
 

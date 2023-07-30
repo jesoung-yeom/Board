@@ -1,10 +1,10 @@
 package com.example.board.service;
 
-import com.example.board.factory.AccountFactory;
-import com.example.board.global.EResponse;
+import com.example.board.global.enums.EResponse;
 import com.example.board.model.Account;
 import com.example.board.model.dto.AccountDto;
 import com.example.board.model.dto.ResponseDto;
+import com.example.board.model.mapper.AccountMapper;
 import com.example.board.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ public class SignUpService {
 
     public ResponseDto signUp(AccountDto accountDto) {
         EResponse.EResponseValue response = EResponse.EResponseValue.OK;
-        Account account = AccountFactory.convertAccount(accountDto);
+        Account account = AccountMapper.MAPPER.toAccount(accountDto);
 
         try {
             if (this.accountRepository.findByUserId(accountDto.getUserId()) == null) {

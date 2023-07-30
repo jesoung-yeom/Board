@@ -1,10 +1,10 @@
 package com.example.board.service;
 
-import com.example.board.factory.AttachFileFactory;
-import com.example.board.global.EBoard;
-import com.example.board.global.EResponse;
+import com.example.board.global.enums.EBoard;
+import com.example.board.global.enums.EResponse;
 import com.example.board.model.AttachFile;
 import com.example.board.model.dto.*;
+import com.example.board.model.mapper.AttachFileMapper;
 import com.example.board.repository.AttachFileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+
+import static com.example.board.global.utils.ListUtil.convertFileSeparationDto;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +72,7 @@ public class BoardFileService {
         List<PreviewAttachFileDto> previewList = new ArrayList<>();
 
         for (AttachFile attachFile : attachList.get()) {
-            PreviewAttachFileDto previewAttachFileDto = AttachFileFactory.convertPreviewAttachFileDto(attachFile);
+            PreviewAttachFileDto previewAttachFileDto = AttachFileMapper.MAPPER.toPreviewAttachFileDto(attachFile);
             previewList.add(previewAttachFileDto);
         }
 
@@ -80,6 +82,10 @@ public class BoardFileService {
     @Transactional
     public ResponseDto saveFile(List<AttachFileDto> attachFileDtoList) {
         EResponse.EResponseValue response = EResponse.EResponseValue.OK;
+        if (attachFileDtoList.isEmpty()) {
+
+            return new ResponseDto(response);
+        }
 
         try {
             for (AttachFileDto attachFileDto : attachFileDtoList) {
@@ -111,7 +117,12 @@ public class BoardFileService {
             return new DownloadFileDto();
         }
 
-        DownloadFileDto downloadFileDto = AttachFileFactory.convertDownloadFileDto(attachFile.get());
+        DownloadFileDto downloadFileDto = null;
+        try {
+            downloadFileDto = AttachFileMapper.MAPPER.toDownloadFileDto(attachFile.get());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return downloadFileDto;
 
@@ -317,7 +328,7 @@ public class BoardFileService {
                 String filePath = localPath + fileName;
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
                 ImageIO.write(bufferedImage, fileExtension, bos);
-                AttachFile attachFile = AttachFileFactory.convertAttachFile(boardDto, fileName, imageBytes.length, filePath, fileExtension);
+                AttachFile attachFile = AttachFileMapper.MAPPER.toAttachFile(boardDto, fileName, imageBytes.length, filePath, fileExtension);
                 boardFileList.add(attachFile);
                 bis.close();
             } catch (IOException e) {
@@ -336,15 +347,17 @@ public class BoardFileService {
         List<AttachFileDto> attachFileDtoList = new ArrayList<>();
 
         for (MultipartFile multipartFile : uploadFileList) {
-            Path filepath = Path.of(localPath, multipartFile.getOriginalFilename());
-            AttachFileDto attachFileDto = AttachFileFactory.convertAttachFileDto(uploadFileDto, multipartFile, filepath.toString());
-            AttachFile attachFile = AttachFileFactory.convertAttachFile(attachFileDto);
+            if (!multipartFile.isEmpty()) {
+                Path filepath = Path.of(localPath, multipartFile.getOriginalFilename());
+                AttachFileDto attachFileDto = AttachFileMapper.MAPPER.toAttachFileDto(uploadFileDto, multipartFile, filepath.toString());
+                AttachFile attachFile = AttachFileMapper.MAPPER.toAttachFile(attachFileDto);
 
-            attachFileDtoList.add(attachFileDto);
-            attachFileList.add(attachFile);
+                attachFileDtoList.add(attachFileDto);
+                attachFileList.add(attachFile);
+            }
         }
 
-        Optional<FileSeparationDto> fileSeparationDto = Optional.ofNullable(AttachFileFactory.convertFileSeparationDto(attachFileList, attachFileDtoList));
+        Optional<FileSeparationDto> fileSeparationDto = Optional.ofNullable(convertFileSeparationDto(attachFileList, attachFileDtoList));
 
         if (!fileSeparationDto.isPresent()) {
             return new FileSeparationDto();
