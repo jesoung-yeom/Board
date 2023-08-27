@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,17 +19,20 @@ import org.springframework.stereotype.Service;
 public class SignUpService {
 
     private final AccountRepository accountRepository;
+    private final BCryptPasswordEncoder encoder;
 
     public ResponseDto signUp(AccountDto accountDto) {
         EResponse.EResponseValue response = EResponse.EResponseValue.OK;
         Account account = AccountMapper.MAPPER.toAccount(accountDto);
 
         try {
-            if (this.accountRepository.findByUserId(accountDto.getUserId()) == null) {
+            if (!this.accountRepository.findByUserId(accountDto.getUserId()).isPresent()) {
+                account.setUserPw(encoder.encode(account.getUserPw()));
                 this.accountRepository.save(account);
 
                 return new ResponseDto(response);
             }
+            System.out.println(this.accountRepository.findByUserId(accountDto.getUserId()));
             log.info("Already exist account");
             response = EResponse.EResponseValue.AEA;
 

@@ -1,34 +1,32 @@
 package com.example.board.service;
 
-import com.example.board.global.EResponse;
 import com.example.board.model.Account;
-import com.example.board.model.dto.AccountDto;
-import com.example.board.model.dto.ResponseDto;
 import com.example.board.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
-public class LoginService {
-
+public class LoginService implements UserDetailsService {
     private final AccountRepository accountRepository;
 
-    public ResponseDto signIn(AccountDto accountDto) {
-        Optional<Account> account = Optional.ofNullable(this.accountRepository.findByUserIdAndUserPw(accountDto.getUserId(), accountDto.getUserPw()));
-        EResponse.EResponseValue response = EResponse.EResponseValue.OK;
-
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Account> account = accountRepository.findByUserId(username);
         if (!account.isPresent()) {
-            log.info("Not match account");
-            response = EResponse.EResponseValue.NMA;
-
-            return new ResponseDto(response);
+            log.info("User not found");
+            throw new UsernameNotFoundException("User not found");
         }
 
-        return new ResponseDto(response);
+        return new User(account.get().getUserId(), account.get().getUserPw(), new ArrayList<>());
     }
 }
