@@ -26,7 +26,7 @@ class Home {
             const confirmed = confirm("로그아웃하시겠습니까?");
 
             if (confirmed) {
-                window.location.href = "/signout";
+                window.location.href = "/logout";
             }
         });
     }

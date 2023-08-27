@@ -8,7 +8,7 @@
             <label class="col-8 display-6 ">게시판</label>
             <label class="col-2 text-center basic-top-margin"
                    th:text="'환영합니다. '+${session.get('user-id')}+' 님'"></label>
-            <button class="col-1 btn btn-light" type="button" onclick="location.href='/signout'">로그아웃</button>
+            <button id="logout-button" class="col-1 btn btn-light">로그아웃</button>
         </div>
         <table class="table">
             <thead>

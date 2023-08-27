@@ -72,7 +72,7 @@ class BoardWrite {
         event.preventDefault();
 
         if (this.checkConfirm("로그아웃하시겠습니까?")) {
-            window.location.href = "/signout";
+            window.location.href = "/logout";
         }
     }
 
