@@ -87,8 +87,8 @@
                                 <input name="id" class="hide-component"
                                        th:value="${commentList.getId()}">
                                 <input name="boardId" class="hide-component" th:value="${commentList.getBoardId()}">
-                                <button class="btn btn-outline-primary"
-                                        th:id="update-comment-button" name="updateCommentButton"
+                                <button class="btn btn-outline-primary" th:id="update-comment-button"
+                                        name="updateCommentButton"
                                         th:if="${commentList.getUserId() == session.get('user-id')}">수정
                                 </button>
                                 <button th:id="complete-comment-button"

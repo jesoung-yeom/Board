@@ -122,6 +122,8 @@ class BoardWrite {
         return msg;
     }
 
+    saveFileList = [];
+
     handleFileSelect = () => {
         const fileList = this.fileInput.files;
         const maxSize = 500 * 1024 * 1024;
@@ -142,6 +144,8 @@ class BoardWrite {
 
             this.listContainer.appendChild(listItem);
         }
+
+        this.saveFileList = fileList;
     }
 
     limitTitleLength = () => {

@@ -80,7 +80,6 @@ public class BoardController {
 
         if (ObjectUtils.isEmpty(downloadFileDto)) {
             log.error("Can't download");
-            //여기서 시도?
         }
 
         try {
@@ -132,7 +131,6 @@ public class BoardController {
 
             return "alert";
         }
-
         boardDto.setId(board.getId());
         uploadFileDto.setBoardId(boardDto.getId());
 
