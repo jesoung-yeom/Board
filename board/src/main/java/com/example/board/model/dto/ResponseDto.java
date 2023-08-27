@@ -1,6 +1,6 @@
 package com.example.board.model.dto;
 
-import com.example.board.global.EResponse;
+import com.example.board.global.enums.EResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
