@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
-    <th:block th:replace="header :: head"></th:block>
-
+<div th:insert="~{header :: head}"></div>
 <body>
 <main class="container-fluid">
     <div class="row d-flex">
@@ -24,10 +23,8 @@
             <tr th:each="boardDto : ${boardDtoList}">
                 <td th:text="${boardDtoStat.count}"></td>
                 <td>
-                    <form th:action="@{/home/board}" method="get">
-                        <input name="id" type="hidden" th:value="${boardDto.getId()}">
-                        <button type="submit" class="btn btn-link" th:text="${boardDto.getTitle()}"></button>
-                    </form>
+                    <input name="id" type="hidden" th:value="${boardDto.getId()}">
+                    <button th:id="board-button" class="btn btn-link" th:text="${boardDto.getTitle()}"></button>
                 </td>
                 <td th:text="${boardDto.getUserId()}"></td>
                 <td th:text="${#temporals.format(boardDto.getUpdatedAt, 'yyyy-MM-dd HH:mm') != null ? #temporals.format(boardDto.getUpdatedAt, 'yyyy-MM-dd HH:mm') : #temporals.format(boardDto.getCreatedAt, 'yyyy-MM-dd HH:mm')}"></td>
@@ -55,10 +52,11 @@
             </ul>
         </nav>
         <hr/>
-        <button type="button" class="btn btn-dark btn-lg col-md-2 offset-md-10 basic-right-margin"
-                onclick="location.href='/home/board/create'">작성
+        <button id="create-button" class="btn btn-dark btn-lg col-md-2 offset-md-10 basic-right-margin">작성
         </button>
     </div>
 </main>
+<script src="/js/home.js"></script>
+<script>new Home();</script>
 </body>
 </html>
