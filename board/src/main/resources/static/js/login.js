@@ -1,4 +1,4 @@
-class SignIn {
+class login {
 
     userId;
     userPw;
@@ -19,7 +19,6 @@ class SignIn {
 
     submitSignInForm = (event) => {
         event.preventDefault();
-
         if (this.checkSignIn()) {
             this.signInForm.action = "/login";
             this.signInForm.method = "POST";

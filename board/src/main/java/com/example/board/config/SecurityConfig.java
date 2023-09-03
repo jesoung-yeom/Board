@@ -23,15 +23,19 @@ public class SecurityConfig {
         HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
         requestCache.setMatchingRequestParameterName(null);
         http
-                .authorizeHttpRequests().requestMatchers("/signup", "/resources/static/**").permitAll()
+                .authorizeHttpRequests().requestMatchers("/","/bootstrap-4.6.2-dist/**","/jquery-3.6.0/**",
+                        "/js/**","/sass/css/**","/signup", "/resources/static/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
+                .loginPage("/")
                 .usernameParameter("userId")
                 .passwordParameter("userPw")
+                .loginProcessingUrl("/login")
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
-                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                                        Authentication authentication) throws IOException, ServletException {
                         UserDetails user = (UserDetails) authentication.getPrincipal();
                         request.getSession().setAttribute("user-id", user.getUsername());
                         response.sendRedirect("/home");
